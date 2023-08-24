@@ -5,7 +5,7 @@ Java highload game server demo with netty features support
 ### Build and run
 
 ```
-./mvn clean verify spring-boot:run
+./mvnw clean verify spring-boot:run
 ```
 
 ### Properties
