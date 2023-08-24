@@ -20,7 +20,7 @@ application:
   server:
     port: 8081
     event-loop-threads: 1
-    worker-threads = 2
+    worker-threads: 2
     game-threads: 4
   room:
     init-delay: 5000
