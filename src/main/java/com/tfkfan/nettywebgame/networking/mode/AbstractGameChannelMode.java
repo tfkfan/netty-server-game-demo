@@ -1,10 +1,10 @@
 package com.tfkfan.nettywebgame.networking.mode;
 
-import com.tfkfan.nettywebgame.networking.session.PlayerSession;
+import com.tfkfan.nettywebgame.networking.session.Session;
 import com.tfkfan.nettywebgame.shared.ChannelUtil;
 import io.netty.channel.ChannelPipeline;
 
-import java.util.List;
+import java.util.Collection;
 
 public abstract class AbstractGameChannelMode implements GameChannelMode {
     final String modeName;
@@ -20,7 +20,7 @@ public abstract class AbstractGameChannelMode implements GameChannelMode {
     }
 
     @Override
-    public void apply(PlayerSession playerSession, boolean clearExistingProtocolHandlers) {
+    public  <T extends Session> void apply(T playerSession, boolean clearExistingProtocolHandlers) {
         if (clearExistingProtocolHandlers) {
             ChannelPipeline pipeline = ChannelUtil
                     .getPipeLineOfConnection(playerSession);
@@ -30,12 +30,12 @@ public abstract class AbstractGameChannelMode implements GameChannelMode {
     }
 
     @Override
-    public void apply(List<PlayerSession> playerSessions) {
+    public  <T extends Session> void apply(Collection<T> playerSessions) {
         playerSessions.forEach(this::apply);
     }
 
     @Override
-    public void apply(List<PlayerSession> playerSessions, boolean clearExistingProtocolHandlers) {
+    public  <T extends Session> void apply(Collection<T> playerSessions, boolean clearExistingProtocolHandlers) {
         playerSessions.forEach(playerSession -> apply(playerSession, clearExistingProtocolHandlers));
     }
 }

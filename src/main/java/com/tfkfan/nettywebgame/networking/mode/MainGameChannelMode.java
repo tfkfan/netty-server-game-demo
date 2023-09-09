@@ -1,6 +1,6 @@
 package com.tfkfan.nettywebgame.networking.mode;
 
-import com.tfkfan.nettywebgame.networking.session.PlayerSession;
+import com.tfkfan.nettywebgame.networking.session.Session;
 import com.tfkfan.nettywebgame.server.adapter.TextWebsocketDecoder;
 import com.tfkfan.nettywebgame.server.adapter.TextWebsocketEncoder;
 import com.tfkfan.nettywebgame.server.handler.GameWebsocketHandler;
@@ -26,12 +26,12 @@ public class MainGameChannelMode extends AbstractGameChannelMode {
     }
 
     @Override
-    public void apply(PlayerSession playerSession, boolean clearExistingProtocolHandlers) {
+    public <T extends Session> void apply(T playerSession, boolean clearExistingProtocolHandlers) {
         apply(playerSession);
     }
 
     @Override
-    public void apply(PlayerSession playerSession) {
+    public  <T extends Session> void apply(T playerSession) {
         log.trace("Going to apply {} on session: {}", getModeName(), playerSession);
 
         ChannelPipeline pipeline = ChannelUtil

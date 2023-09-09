@@ -1,6 +1,7 @@
 package com.tfkfan.nettywebgame.shared;
 
 import com.tfkfan.nettywebgame.networking.session.PlayerSession;
+import com.tfkfan.nettywebgame.networking.session.Session;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
@@ -13,8 +14,8 @@ import java.util.NoSuchElementException;
 @Slf4j
 public class ChannelUtil {
     public static ChannelPipeline getPipeLineOfConnection(
-            PlayerSession playerSession) {
-        return playerSession.getChannel().pipeline();
+            Session session) {
+        return session.getChannel().pipeline();
     }
 
     public static void clearPipeline(ChannelPipeline pipeline) {

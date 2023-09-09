@@ -1,21 +1,21 @@
 package com.tfkfan.nettywebgame.networking.mode;
 
-import com.tfkfan.nettywebgame.networking.session.PlayerSession;
+import com.tfkfan.nettywebgame.networking.session.Session;
 
-import java.util.List;
+import java.util.Collection;
 
 public interface GameChannelMode {
     String GAME_CHANNEL_MODE = "GAME_CHANNEL_MODE";
 
     String getModeName();
 
-    void apply(PlayerSession playerSession);
+    <T extends Session> void apply(T playerSession);
 
-    void apply(PlayerSession playerSession,
+    <T extends Session> void apply(T playerSession,
                boolean clearExistingProtocolHandlers);
 
-    void apply(List<PlayerSession> playerSessions);
+   <T extends Session> void apply(Collection<T> playerSessions);
 
-    void apply(List<PlayerSession> playerSessions,
+    <T extends Session> void apply(Collection<T> playerSessions,
                boolean clearExistingProtocolHandlers);
 }

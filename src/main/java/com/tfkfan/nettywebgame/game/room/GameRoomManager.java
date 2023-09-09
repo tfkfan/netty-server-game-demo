@@ -10,9 +10,7 @@ import com.tfkfan.nettywebgame.networking.message.impl.outcoming.OutcomingMessag
 import com.tfkfan.nettywebgame.networking.mode.MainGameChannelMode;
 import com.tfkfan.nettywebgame.networking.session.PlayerSession;
 import com.tfkfan.nettywebgame.shared.WaitingPlayerSession;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
