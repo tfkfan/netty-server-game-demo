@@ -19,13 +19,13 @@ import com.tfkfan.nettywebgame.pack.update.GameUpdatePack;
 import com.tfkfan.nettywebgame.pack.update.PlayerUpdatePack;
 import com.tfkfan.nettywebgame.shared.Direction;
 import com.tfkfan.nettywebgame.shared.Vector;
-import com.tfkfan.nettywebgame.task.TaskManagerService;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
@@ -36,11 +36,11 @@ public class DefaultGameRoom extends AbstractGameRoom {
 
     private final AtomicBoolean started = new AtomicBoolean(false);
 
-    private final TaskManagerService schedulerService;
+    private final ScheduledExecutorService schedulerService;
     private final RoomProperties roomProperties;
 
     public DefaultGameRoom(GameMap gameMap, UUID gameRoomId,
-                           GameRoomManager gameRoomManager, TaskManagerService schedulerService,
+                           GameRoomManager gameRoomManager, ScheduledExecutorService schedulerService,
                            RoomProperties roomProperties) {
         super(gameRoomId, gameRoomManager);
         this.gameMap = gameMap;

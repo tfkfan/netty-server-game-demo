@@ -9,7 +9,7 @@ import com.tfkfan.nettywebgame.networking.message.impl.ConnectMessage;
 import com.tfkfan.nettywebgame.networking.message.impl.outcoming.OutcomingMessage;
 import com.tfkfan.nettywebgame.networking.mode.MainGameChannelMode;
 import com.tfkfan.nettywebgame.networking.session.PlayerSession;
-import com.tfkfan.nettywebgame.task.TaskManagerService;
+import com.tfkfan.nettywebgame.shared.WaitingPlayerSession;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static com.tfkfan.nettywebgame.shared.FrameUtil.eventToFrame;
@@ -33,7 +34,8 @@ public class GameRoomManager {
     private final MainGameChannelMode gameChannelMode;
     private final PlayerFactory<Long, ConnectMessage, DefaultPlayer, DefaultGameRoom> playerFactory;
     private final ApplicationProperties applicationProperties;
-    private final TaskManagerService schedulerService;
+    private final ScheduledExecutorService schedulerService;
+
     public DefaultGameRoom getRoomByKey(UUID key) {
         return gameRoomMap.get(key);
     }
@@ -48,7 +50,7 @@ public class GameRoomManager {
 
             final GameMap gameMap = new GameMap();
             final DefaultGameRoom room = new DefaultGameRoom(gameMap,
-                    UUID.randomUUID(), GameRoomManager.this, schedulerService,  applicationProperties.getRoom());
+                    UUID.randomUUID(), GameRoomManager.this, schedulerService, applicationProperties.getRoom());
             gameRoomMap.put(room.key(), room);
 
             final List<PlayerSession> playerSessions = new ArrayList<>();
@@ -68,13 +70,5 @@ public class GameRoomManager {
         } catch (Exception e) {
             log.info("Queue interrupted", e);
         }
-    }
-
-    @RequiredArgsConstructor
-    @Setter
-    @Getter
-    static class WaitingPlayerSession {
-        private final PlayerSession playerSession;
-        private final ConnectMessage initialData;
     }
 }

@@ -6,7 +6,6 @@ import com.tfkfan.nettywebgame.networking.message.Message;
 import com.tfkfan.nettywebgame.networking.message.PlayerMessage;
 import com.tfkfan.nettywebgame.networking.session.PlayerSession;
 import com.tfkfan.nettywebgame.networking.session.Session;
-import com.tfkfan.nettywebgame.task.Task;
 
 import java.util.Collection;
 import java.util.List;
@@ -14,7 +13,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
 
-public interface GameRoom extends Task {
+public interface GameRoom extends Runnable {
     void onRoomCreated(List<PlayerSession> playerSessions);
 
     void onRoomStarted();

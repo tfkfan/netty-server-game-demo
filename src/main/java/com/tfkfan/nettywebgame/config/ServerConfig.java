@@ -1,13 +1,13 @@
 package com.tfkfan.nettywebgame.config;
 
-import com.tfkfan.nettywebgame.task.SimpleTaskManagerService;
-import com.tfkfan.nettywebgame.task.TaskManagerService;
+import io.netty.channel.nio.NioEventLoopGroup;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 @EnableScheduling
 @Configuration
@@ -15,7 +15,7 @@ import java.util.concurrent.Executors;
 public class ServerConfig {
     private final ApplicationProperties applicationProperties;
     @Bean
-    public TaskManagerService taskManagerService(){
-        return new SimpleTaskManagerService(applicationProperties.getServer().getGameThreads(), Executors.newCachedThreadPool());
+    public ScheduledExecutorService taskManagerService(){
+        return new NioEventLoopGroup(applicationProperties.getServer().getGameThreads(), Executors.newCachedThreadPool());
     }
 }
