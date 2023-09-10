@@ -1,10 +1,10 @@
 package com.tfkfan.nettywebgame.game.model;
 
 import com.tfkfan.nettywebgame.game.room.DefaultGameRoom;
-import com.tfkfan.nettywebgame.networking.session.PlayerSession;
 import com.tfkfan.nettywebgame.networking.pack.init.PlayerInitPack;
 import com.tfkfan.nettywebgame.networking.pack.privat.PrivatePlayerUpdatePack;
 import com.tfkfan.nettywebgame.networking.pack.update.PlayerUpdatePack;
+import com.tfkfan.nettywebgame.networking.session.PlayerSession;
 import com.tfkfan.nettywebgame.shared.Constants;
 import com.tfkfan.nettywebgame.shared.Direction;
 import lombok.Getter;
@@ -26,14 +26,12 @@ public class DefaultPlayer extends AbstractPlayer<DefaultGameRoom, PlayerInitPac
 
     @Override
     public void update() {
-        double ABS_PLAYER_SPEED = Constants.ABS_PLAYER_SPEED;
-
         velocity.setX(isMoving && movingState.get(Direction.RIGHT) ?
-                ABS_PLAYER_SPEED : (isMoving && movingState.get(Direction.LEFT) ?
-                -ABS_PLAYER_SPEED : 0.0));
+                Constants.ABS_PLAYER_SPEED : (isMoving && movingState.get(Direction.LEFT) ?
+                -Constants.ABS_PLAYER_SPEED : 0.0));
         velocity.setY(isMoving && movingState.get(Direction.UP) ?
-                -ABS_PLAYER_SPEED : (isMoving && movingState.get(Direction.DOWN) ?
-                ABS_PLAYER_SPEED : 0.0));
+                -Constants.ABS_PLAYER_SPEED : (isMoving && movingState.get(Direction.DOWN) ?
+                Constants.ABS_PLAYER_SPEED : 0.0));
 
         position.sum(velocity);
     }
