@@ -13,18 +13,25 @@ import io.netty.handler.codec.http.websocketx.PingWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.PongWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 import java.util.UUID;
 
 @Slf4j
-@RequiredArgsConstructor
+@NoArgsConstructor
 public abstract class WebsocketHandler<T> extends SimpleChannelInboundHandler<T> {
     protected final Gson objectMapper = new Gson();
-    protected final GameRoomManager gameRoomManager;
+    protected  GameRoomManager gameRoomManager;
+    @Autowired
+    public void setGameRoomManager(@Lazy GameRoomManager gameRoomManager) {
+        this.gameRoomManager = gameRoomManager;
+    }
 
 
     protected void join(ChannelHandlerContext ctx, ConnectMessage data) {

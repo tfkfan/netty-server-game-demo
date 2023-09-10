@@ -11,16 +11,15 @@ import io.netty.handler.codec.http.websocketx.PingWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.PongWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @ChannelHandler.Sharable
+@NoArgsConstructor
 @Component
 public class InitialWebsocketHandler extends WebsocketHandler<WebSocketFrame> {
-    public InitialWebsocketHandler(GameRoomManager gameRoomManager) {
-        super(gameRoomManager);
-    }
 
     @Override
     public void channelRead0(ChannelHandlerContext ctx, WebSocketFrame frame) {

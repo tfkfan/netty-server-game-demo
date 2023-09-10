@@ -23,14 +23,12 @@ public abstract class AbstractPlayer< GR extends GameRoom,
         IP extends InitPack, UP extends UpdatePack, PUP extends PrivateUpdatePack>
         extends GameEntity<Long, GR, IP, UP> implements Player, Updatable, IPrivateUpdatePackGetter<PUP> {
     protected PlayerSession session;
-    protected Direction direction;
     protected Map<Direction, Boolean> movingState;
 
     public AbstractPlayer(Long id, GR gameRoom, PlayerSession session) {
         super(id, gameRoom);
         this.session = session;
-        movingState = Arrays.stream(Direction.values()).collect(Collectors.toMap(direction -> direction, direction -> false));
-        direction = Direction.UP;
+        this.movingState = Arrays.stream(Direction.values()).collect(Collectors.toMap(direction -> direction, direction -> false));
     }
 
     @Override

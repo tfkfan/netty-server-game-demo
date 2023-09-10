@@ -8,16 +8,15 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
+@NoArgsConstructor
 @ChannelHandler.Sharable
 public class GameWebsocketHandler extends WebsocketHandler<PlayerMessage> {
-    public GameWebsocketHandler(GameRoomManager gameRoomManager) {
-        super(gameRoomManager);
-    }
 
     @Override
     public void channelRead0(ChannelHandlerContext ctx, PlayerMessage msg) {
