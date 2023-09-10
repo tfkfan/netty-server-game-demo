@@ -2,9 +2,9 @@ package com.tfkfan.nettywebgame.game.model;
 
 import com.tfkfan.nettywebgame.game.room.DefaultGameRoom;
 import com.tfkfan.nettywebgame.networking.session.PlayerSession;
-import com.tfkfan.nettywebgame.pack.init.PlayerInitPack;
-import com.tfkfan.nettywebgame.pack.privat.PrivatePlayerUpdatePack;
-import com.tfkfan.nettywebgame.pack.update.PlayerUpdatePack;
+import com.tfkfan.nettywebgame.networking.pack.init.PlayerInitPack;
+import com.tfkfan.nettywebgame.networking.pack.privat.PrivatePlayerUpdatePack;
+import com.tfkfan.nettywebgame.networking.pack.update.PlayerUpdatePack;
 import com.tfkfan.nettywebgame.shared.Constants;
 import com.tfkfan.nettywebgame.shared.Direction;
 import lombok.Getter;
@@ -19,11 +19,8 @@ public class DefaultPlayer extends AbstractPlayer<DefaultGameRoom, PlayerInitPac
         super(id, gameRoom, session);
     }
 
-
     public void updateState(Direction direction, Boolean state) {
         movingState.put(direction, state);
-
-        this.direction = direction;
 
         isMoving = true;
         if (this.movingState.get(Direction.UP) && this.movingState.get(Direction.RIGHT))

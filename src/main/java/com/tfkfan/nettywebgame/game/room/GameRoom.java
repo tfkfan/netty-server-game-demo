@@ -1,7 +1,7 @@
 package com.tfkfan.nettywebgame.game.room;
 
-import com.tfkfan.nettywebgame.event.Event;
-import com.tfkfan.nettywebgame.event.listener.EventListener;
+import com.tfkfan.nettywebgame.game.event.Event;
+import com.tfkfan.nettywebgame.game.event.listener.EventListener;
 import com.tfkfan.nettywebgame.networking.message.Message;
 import com.tfkfan.nettywebgame.networking.message.PlayerMessage;
 import com.tfkfan.nettywebgame.networking.session.PlayerSession;

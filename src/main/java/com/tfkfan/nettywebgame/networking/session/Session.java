@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Setter
 public abstract class Session extends AbstractEntity<UUID> {
     protected final Channel channel;
-    protected Map<String, Object> attributes = new ConcurrentHashMap<>();
+    protected final Map<String, Object> attributes = new ConcurrentHashMap<>();
     protected String ip;
 
     public Session(UUID id, Channel channel) {

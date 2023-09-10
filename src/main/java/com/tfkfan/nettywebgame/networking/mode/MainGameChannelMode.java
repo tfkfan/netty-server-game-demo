@@ -1,9 +1,9 @@
 package com.tfkfan.nettywebgame.networking.mode;
 
 import com.tfkfan.nettywebgame.networking.session.Session;
-import com.tfkfan.nettywebgame.server.adapter.TextWebsocketDecoder;
-import com.tfkfan.nettywebgame.server.adapter.TextWebsocketEncoder;
-import com.tfkfan.nettywebgame.server.handler.GameWebsocketHandler;
+import com.tfkfan.nettywebgame.networking.server.adapter.TextWebsocketDecoder;
+import com.tfkfan.nettywebgame.networking.server.adapter.TextWebsocketEncoder;
+import com.tfkfan.nettywebgame.networking.server.handler.GameWebsocketHandler;
 import com.tfkfan.nettywebgame.shared.ChannelUtil;
 import com.tfkfan.nettywebgame.shared.ServerConstants;
 import io.netty.channel.ChannelPipeline;

@@ -34,8 +34,8 @@ public class GameRoomManager {
     private final ApplicationProperties applicationProperties;
     private final ScheduledExecutorService schedulerService;
 
-    public DefaultGameRoom getRoomByKey(UUID key) {
-        return gameRoomMap.get(key);
+    public Optional<DefaultGameRoom> getRoomByKey(UUID key) {
+        return Optional.ofNullable(gameRoomMap.get(key));
     }
 
     public void addPlayerToWait(PlayerSession playerSession, ConnectMessage initialData) {

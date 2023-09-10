@@ -1,11 +1,11 @@
 package com.tfkfan.nettywebgame.game.model;
 
-import com.tfkfan.nettywebgame.pack.Initializable;
+import com.tfkfan.nettywebgame.networking.pack.Initializable;
 import com.tfkfan.nettywebgame.game.room.GameRoom;
-import com.tfkfan.nettywebgame.pack.InitPack;
-import com.tfkfan.nettywebgame.pack.UpdatePack;
-import com.tfkfan.nettywebgame.pack.init.IInitPackGetter;
-import com.tfkfan.nettywebgame.pack.update.IUpdatePackGetter;
+import com.tfkfan.nettywebgame.networking.pack.InitPack;
+import com.tfkfan.nettywebgame.networking.pack.UpdatePack;
+import com.tfkfan.nettywebgame.networking.pack.init.IInitPackGetter;
+import com.tfkfan.nettywebgame.networking.pack.update.IUpdatePackGetter;
 import com.tfkfan.nettywebgame.shared.Vector;
 import lombok.Getter;
 import lombok.Setter;

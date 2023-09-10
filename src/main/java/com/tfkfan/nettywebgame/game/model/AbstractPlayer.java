@@ -2,11 +2,11 @@ package com.tfkfan.nettywebgame.game.model;
 
 import com.tfkfan.nettywebgame.game.room.GameRoom;
 import com.tfkfan.nettywebgame.networking.session.PlayerSession;
-import com.tfkfan.nettywebgame.pack.InitPack;
-import com.tfkfan.nettywebgame.pack.PrivateUpdatePack;
-import com.tfkfan.nettywebgame.pack.Updatable;
-import com.tfkfan.nettywebgame.pack.UpdatePack;
-import com.tfkfan.nettywebgame.pack.update.IPrivateUpdatePackGetter;
+import com.tfkfan.nettywebgame.networking.pack.InitPack;
+import com.tfkfan.nettywebgame.networking.pack.PrivateUpdatePack;
+import com.tfkfan.nettywebgame.networking.pack.Updatable;
+import com.tfkfan.nettywebgame.networking.pack.UpdatePack;
+import com.tfkfan.nettywebgame.networking.pack.update.IPrivateUpdatePackGetter;
 import com.tfkfan.nettywebgame.shared.Direction;
 import lombok.Getter;
 import lombok.Setter;

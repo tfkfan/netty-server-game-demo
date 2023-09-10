@@ -1,8 +1,8 @@
 package com.tfkfan.nettywebgame.game.room;
 
 import com.google.gson.Gson;
-import com.tfkfan.nettywebgame.event.Event;
-import com.tfkfan.nettywebgame.event.listener.EventListener;
+import com.tfkfan.nettywebgame.game.event.Event;
+import com.tfkfan.nettywebgame.game.event.listener.EventListener;
 import com.tfkfan.nettywebgame.networking.message.Message;
 import com.tfkfan.nettywebgame.networking.message.PlayerMessage;
 import com.tfkfan.nettywebgame.networking.message.impl.outcoming.OutcomingMessage;
@@ -51,6 +51,7 @@ public abstract class AbstractGameRoom implements GameRoom {
 
     public void onDisconnect(PlayerSession playerSession) {
         sessions.remove(playerSession.getId());
+        playerSession.removePlayerSessionFromChannel();
     }
 
     @Override
