@@ -82,6 +82,9 @@ initializeWebsocket((evt) => {
     if (eventData.type === BATTLE_START) {
         debugMsg.innerText = "Battle started"
     }
+    if (eventData.type === FAILURE) {
+        debugMsg.innerText = "Internal error occurred"
+    }
     if (eventData.type === INIT) {
         initMsg.innerText = JSON.stringify(eventData.data);
     }
