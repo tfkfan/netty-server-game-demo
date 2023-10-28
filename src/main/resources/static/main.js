@@ -1,5 +1,5 @@
 var cnvs = document.getElementById("cnvs");
-cnvs.width  = window.innerWidth - 350;
+cnvs.width = window.innerWidth - 350;
 cnvs.height = window.innerHeight - 50;
 
 var initMsg = document.getElementById("initMsg");
@@ -24,7 +24,7 @@ function drawPlayer(x, y) {
 }
 
 function clear() {
-    ctx.clearRect(0, 0,cnvs.width , cnvs.height );
+    ctx.clearRect(0, 0, cnvs.width, cnvs.height);
 }
 
 function drawPlayers() {
@@ -57,14 +57,21 @@ document.onkeyup = (event) => {
 };
 
 document.getElementById("loginBtn").onclick = () => {
+    send(AUTHENTICATION, {"BEARER_TOKEN": "token1"});
+}
+document.getElementById("joinBtn").onclick = () => {
     send(CONNECT, {});
 }
-
 initializeWebsocket((evt) => {
     const eventData = JSON.parse(evt.data);
     console.log(`Message ${eventData.type} accepted`);
     if (eventData.type === CONNECT_WAIT) {
         debugMsg.innerText = "Wait"
+    }
+    if (eventData.type === AUTHENTICATION) {
+        debugMsg.innerText = "Authorized"
+        document.getElementById("joinBtn").removeAttribute("disabled");
+        document.getElementById("loginBtn").setAttribute("disabled","disabled");
     }
     if (eventData.type === CONNECT_SUCCESS) {
         debugMsg.innerText = "Connected to game room"
@@ -80,7 +87,7 @@ initializeWebsocket((evt) => {
     }
     if (eventData.type === UPDATE) {
         clear();
-        players = eventData.data.players.reduce( (map, obj) =>{
+        players = eventData.data.players.reduce((map, obj) => {
             map[obj.id] = obj;
             return map;
         }, {});

@@ -1,5 +1,6 @@
 package com.tfkfan.nettywebgame.networking.mode;
 
+import com.tfkfan.nettywebgame.networking.mode.GameChannelMode;
 import com.tfkfan.nettywebgame.networking.session.Session;
 import com.tfkfan.nettywebgame.shared.ChannelUtil;
 import io.netty.channel.ChannelPipeline;

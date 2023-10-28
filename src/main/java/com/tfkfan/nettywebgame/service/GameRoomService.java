@@ -1,11 +1,12 @@
-package com.tfkfan.nettywebgame.game.room;
+package com.tfkfan.nettywebgame.service;
 
 import com.tfkfan.nettywebgame.config.ApplicationProperties;
+import com.tfkfan.nettywebgame.event.GameRoomJoinEvent;
 import com.tfkfan.nettywebgame.game.factory.PlayerFactory;
 import com.tfkfan.nettywebgame.game.map.GameMap;
 import com.tfkfan.nettywebgame.game.model.DefaultPlayer;
+import com.tfkfan.nettywebgame.game.room.DefaultGameRoom;
 import com.tfkfan.nettywebgame.networking.message.Message;
-import com.tfkfan.nettywebgame.networking.message.impl.ConnectMessage;
 import com.tfkfan.nettywebgame.networking.message.impl.outcoming.OutcomingMessage;
 import com.tfkfan.nettywebgame.networking.mode.MainGameChannelMode;
 import com.tfkfan.nettywebgame.networking.session.PlayerSession;
@@ -25,12 +26,12 @@ import static com.tfkfan.nettywebgame.shared.FrameUtil.eventToFrame;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class GameRoomManager {
+public class GameRoomService {
     private final Map<UUID, DefaultGameRoom> gameRoomMap = new ConcurrentHashMap<>();
     private final Queue<WaitingPlayerSession> sessionQueue = new ConcurrentLinkedQueue<>();
 
     private final MainGameChannelMode gameChannelMode;
-    private final PlayerFactory<Long, ConnectMessage, DefaultPlayer, DefaultGameRoom> playerFactory;
+    private final PlayerFactory<Long, GameRoomJoinEvent, DefaultPlayer, DefaultGameRoom> playerFactory;
     private final ApplicationProperties applicationProperties;
     private final ScheduledExecutorService schedulerService;
 
@@ -38,7 +39,7 @@ public class GameRoomManager {
         return Optional.ofNullable(gameRoomMap.get(key));
     }
 
-    public void addPlayerToWait(PlayerSession playerSession, ConnectMessage initialData) {
+    public void addPlayerToWait(PlayerSession playerSession, GameRoomJoinEvent initialData) {
         try {
             sessionQueue.add(new WaitingPlayerSession(playerSession, initialData));
             playerSession.getChannel().writeAndFlush(eventToFrame(new OutcomingMessage(Message.CONNECT_WAIT)));
@@ -48,7 +49,7 @@ public class GameRoomManager {
 
             final GameMap gameMap = new GameMap();
             final DefaultGameRoom room = new DefaultGameRoom(gameMap,
-                    UUID.randomUUID(), GameRoomManager.this, schedulerService, applicationProperties.getRoom());
+                    UUID.randomUUID(), GameRoomService.this, schedulerService, applicationProperties.getRoom());
             gameRoomMap.put(room.key(), room);
 
             final List<PlayerSession> playerSessions = new ArrayList<>();
@@ -57,7 +58,7 @@ public class GameRoomManager {
                 final PlayerSession ps = waitingPlayerSession.getPlayerSession();
                 final DefaultPlayer player = playerFactory.create(gameMap.nextPlayerId(), waitingPlayerSession.getInitialData(),
                         room, ps);
-                ps.setParentRoomKey(room.key());
+                ps.setRoomKey(room.key());
                 ps.setPlayer(player);
                 playerSessions.add(ps);
             }

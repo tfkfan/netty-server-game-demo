@@ -9,5 +9,7 @@ public interface ServerConstants {
     String PLAYER_START_HANDLER_NAME = "startHandler";
     String EVENT_HANDLER = "eventHandler";
 
+    String PING_PONG_HANDLER_NAME = "pingPongHandler";
+
     int DEFAULT_OBJECT_AGGREGATOR_CONTENT_LENGTH = 65536;
 }

@@ -1,6 +1,8 @@
-package com.tfkfan.nettywebgame.networking.server;
+package com.tfkfan.nettywebgame.networking.mode;
 
-import com.tfkfan.nettywebgame.networking.server.handler.InitialWebsocketHandler;
+import com.tfkfan.nettywebgame.networking.server.adapter.TextWebsocketDecoder;
+import com.tfkfan.nettywebgame.networking.server.handler.InitialHandler;
+import com.tfkfan.nettywebgame.networking.server.handler.PingPongWebsocketHandler;
 import com.tfkfan.nettywebgame.shared.ServerConstants;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
@@ -13,10 +15,14 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class DefaultWebsocketInitializer extends ChannelInitializer<Channel> {
-    private final InitialWebsocketHandler webSocketHandlerMain;
+    private final InitialHandler webSocketHandlerMain;
+    private final PingPongWebsocketHandler pingPongWebsocketHandler;
+    private final TextWebsocketDecoder textWebsocketDecoder;
 
-    public DefaultWebsocketInitializer(InitialWebsocketHandler webSocketHandlerMain) {
+    public DefaultWebsocketInitializer(InitialHandler webSocketHandlerMain, PingPongWebsocketHandler pingPongWebsocketHandler, TextWebsocketDecoder textWebsocketDecoder) {
         this.webSocketHandlerMain = webSocketHandlerMain;
+        this.pingPongWebsocketHandler = pingPongWebsocketHandler;
+        this.textWebsocketDecoder = textWebsocketDecoder;
     }
 
     @Override
@@ -25,6 +31,8 @@ public class DefaultWebsocketInitializer extends ChannelInitializer<Channel> {
         pipeline.addLast("decoder", new HttpRequestDecoder());
         pipeline.addLast("aggregator", new HttpObjectAggregator(ServerConstants.DEFAULT_OBJECT_AGGREGATOR_CONTENT_LENGTH));
         pipeline.addLast("handler", new WebSocketServerProtocolHandler(ServerConstants.WEBSOCKET_PATH));
+        pipeline.addLast(ServerConstants.PING_PONG_HANDLER_NAME, pingPongWebsocketHandler);
+        pipeline.addLast(ServerConstants.TXT_WS_DECODER, textWebsocketDecoder);
         pipeline.addLast(ServerConstants.INIT_HANDLER_NAME, webSocketHandlerMain);
         pipeline.addLast("encoder", new HttpResponseEncoder());
     }

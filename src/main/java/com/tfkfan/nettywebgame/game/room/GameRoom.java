@@ -1,9 +1,6 @@
 package com.tfkfan.nettywebgame.game.room;
 
-import com.tfkfan.nettywebgame.game.event.Event;
-import com.tfkfan.nettywebgame.game.event.listener.EventListener;
 import com.tfkfan.nettywebgame.networking.message.Message;
-import com.tfkfan.nettywebgame.networking.message.PlayerMessage;
 import com.tfkfan.nettywebgame.networking.session.PlayerSession;
 import com.tfkfan.nettywebgame.networking.session.Session;
 
@@ -25,9 +22,6 @@ public interface GameRoom extends Runnable {
     void onDisconnect(PlayerSession session);
 
     void update();
-
-    <E extends Event>  void registerEventListener(Integer messageType, Class<E> eventType, EventListener<E> listener);
-    void onMessage(PlayerMessage msg);
 
     Collection<PlayerSession> sessions();
 

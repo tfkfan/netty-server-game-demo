@@ -16,7 +16,7 @@ public class PlayerSession extends Session {
     private static final AttributeKey<PlayerSession> PLAYER_SESSION_ATTRIBUTE_KEY = AttributeKey.valueOf("plx_session");
 
     protected Player player;
-    protected UUID parentRoomKey;
+    protected UUID roomKey;
 
     public static PlayerSession createPlayerSession(Channel channel, UUID uuid) {
         return addPlayerSessionToChannel(channel, new PlayerSession(uuid, channel));
@@ -47,6 +47,6 @@ public class PlayerSession extends Session {
     @Override
     public String toString() {
         return "PlayerSession [id=" + getId() + "player=" + player
-                + ", parentGameRoom=" + parentRoomKey + "]";
+                + ", parentGameRoom=" + roomKey + "]";
     }
 }

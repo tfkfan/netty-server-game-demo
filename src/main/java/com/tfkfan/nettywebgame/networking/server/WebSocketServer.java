@@ -1,6 +1,7 @@
 package com.tfkfan.nettywebgame.networking.server;
 
 import com.tfkfan.nettywebgame.config.ApplicationProperties;
+import com.tfkfan.nettywebgame.networking.mode.DefaultWebsocketInitializer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.EventLoopGroup;

@@ -1,22 +1,23 @@
 package com.tfkfan.nettywebgame.game.room;
 
 import com.tfkfan.nettywebgame.config.RoomProperties;
-import com.tfkfan.nettywebgame.game.event.InitEvent;
-import com.tfkfan.nettywebgame.game.event.KeyDownEvent;
-import com.tfkfan.nettywebgame.game.event.MouseDownEvent;
-import com.tfkfan.nettywebgame.game.event.MouseMoveEvent;
+import com.tfkfan.nettywebgame.event.InitPlayerEvent;
+import com.tfkfan.nettywebgame.event.KeyDownPlayerEvent;
+import com.tfkfan.nettywebgame.event.MouseDownPlayerEvent;
+import com.tfkfan.nettywebgame.event.MouseMovePlayerEvent;
 import com.tfkfan.nettywebgame.game.map.GameMap;
 import com.tfkfan.nettywebgame.game.model.DefaultPlayer;
 import com.tfkfan.nettywebgame.networking.message.Message;
 import com.tfkfan.nettywebgame.networking.message.impl.outcoming.OutcomingMessage;
 import com.tfkfan.nettywebgame.networking.message.impl.outcoming.OutcomingPlayerMessage;
-import com.tfkfan.nettywebgame.networking.session.PlayerSession;
 import com.tfkfan.nettywebgame.networking.pack.init.GameInitPack;
 import com.tfkfan.nettywebgame.networking.pack.privat.PrivatePlayerUpdatePack;
 import com.tfkfan.nettywebgame.networking.pack.shared.GameRoomStartPack;
 import com.tfkfan.nettywebgame.networking.pack.shared.GameSettingsPack;
 import com.tfkfan.nettywebgame.networking.pack.update.GameUpdatePack;
 import com.tfkfan.nettywebgame.networking.pack.update.PlayerUpdatePack;
+import com.tfkfan.nettywebgame.networking.session.PlayerSession;
+import com.tfkfan.nettywebgame.service.GameRoomService;
 import com.tfkfan.nettywebgame.shared.Direction;
 import com.tfkfan.nettywebgame.shared.Vector;
 import lombok.extern.slf4j.Slf4j;
@@ -40,21 +41,12 @@ public class DefaultGameRoom extends AbstractGameRoom {
     private final RoomProperties roomProperties;
 
     public DefaultGameRoom(GameMap gameMap, UUID gameRoomId,
-                           GameRoomManager gameRoomManager, ScheduledExecutorService schedulerService,
+                           GameRoomService gameRoomService, ScheduledExecutorService schedulerService,
                            RoomProperties roomProperties) {
-        super(gameRoomId, gameRoomManager);
+        super(gameRoomId, gameRoomService);
         this.gameMap = gameMap;
         this.schedulerService = schedulerService;
         this.roomProperties = roomProperties;
-
-        this.registerEventListener(Message.PLAYER_KEY_DOWN, KeyDownEvent.class,
-                this::onPlayerKeyDown);
-        this.registerEventListener(Message.INIT, InitEvent.class,
-                this::onPlayerInitRequest);
-        this.registerEventListener(Message.PLAYER_MOUSE_DOWN, MouseDownEvent.class,
-                this::onPlayerMouseClick);
-        this.registerEventListener(Message.PLAYER_MOUSE_MOVE, MouseMoveEvent.class,
-                this::onPlayerMouseMove);
     }
 
     @Override
@@ -111,22 +103,22 @@ public class DefaultGameRoom extends AbstractGameRoom {
         }
     }
 
-    public void onPlayerMouseClick(MouseDownEvent event) {
+    public void onPlayerMouseClick(MouseDownPlayerEvent event) {
     }
 
-    public void onPlayerMouseMove(MouseMoveEvent event) {
+    public void onPlayerMouseMove(MouseMovePlayerEvent event) {
     }
 
-    public void onPlayerKeyDown(KeyDownEvent event) {
+    public void onPlayerKeyDown(KeyDownPlayerEvent event) {
         if (!started.get()) return;
-        DefaultPlayer player = (DefaultPlayer) event.session().getPlayer();
+        DefaultPlayer player = (DefaultPlayer) event.getSession().getPlayer();
         if (!player.getIsAlive()) return;
         Direction direction = Direction.valueOf(event.getInputId());
         player.updateState(direction, event.getState());
     }
 
-    public void onPlayerInitRequest(InitEvent event) {
-        PlayerSession session = event.session();
+    public void onPlayerInitRequest(InitPlayerEvent initEvent) {
+        PlayerSession session = initEvent.getSession();
         send(session, new OutcomingPlayerMessage(session, Message.INIT,
                 new GameInitPack(((DefaultPlayer) session.getPlayer()).getInitPack(),
                         roomProperties.getLooprate(),

@@ -1,4 +1,4 @@
-package com.tfkfan.nettywebgame.game.event;
+package com.tfkfan.nettywebgame.event;
 
 import com.tfkfan.nettywebgame.networking.session.PlayerSession;
 import lombok.Getter;
@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class DisconnectEvent extends AbstractEvent{
+public class DisconnectEvent extends AbstractPlayerEvent{
     public DisconnectEvent(PlayerSession session) {
         super(session);
     }
