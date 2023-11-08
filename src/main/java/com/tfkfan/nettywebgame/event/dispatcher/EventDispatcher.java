@@ -16,10 +16,10 @@ public class EventDispatcher<T extends Message> {
     protected final Gson objectMapper = new Gson();
 
     private final Map<Integer, Class<? extends Event>> typeToEventType = new HashMap<>();
-    private final Map<Integer, EventListener> eventListenerMap = new HashMap<>();
+    private final Map<Integer, EventListener<? extends Event>> eventListenerMap = new HashMap<>();
 
     public <A extends Event> void addEventListener(int messageType, Class<A> eventType,
-                                                   EventListener<A> eventListener) {
+                                                   EventListener<? extends Event> eventListener) {
         typeToEventType.put(messageType, eventType);
         eventListenerMap.put(messageType, eventListener);
     }
@@ -37,6 +37,12 @@ public class EventDispatcher<T extends Message> {
 
         if (!eventListenerMap.containsKey(message.getType()))
             throw new RuntimeException("Incorrect message type");
-        eventListenerMap.get(message.getType()).onEvent(event);
+
+        fireEvent(event, eventListenerMap.get(message.getType()));
+    }
+
+    @SuppressWarnings("unchecked")
+    private <E extends Event> void fireEvent(E event, EventListener<? extends Event> eventListener) {
+        ((EventListener<E>) eventListener).onEvent(event);
     }
 }

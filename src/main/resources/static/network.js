@@ -1,29 +1,40 @@
 var socket;
+var events = {};
 
-function initializeWebsocket(listener) {
+function initializeWebsocket(wsEndpoint = "ws://localhost:8081/websocket") {
     if (!window.WebSocket) {
         // @ts-ignore
         window.WebSocket = window.MozWebSocket;
     }
     if (window.WebSocket) {
-        socket = new WebSocket("ws://localhost:8081/websocket");
+        socket = new WebSocket(wsEndpoint);
     } else {
         alert("Your browser does not support Web Socket.");
     }
 
-    socket.addEventListener('open', () => {
+    socket.addEventListener('open', function () {
         console.log("Connection established");
     });
 
-    socket.addEventListener('error', (event) => {
+    socket.addEventListener('error', function (event) {
         console.log(event.message);
     });
 
-    socket.addEventListener('close', () => {
+    socket.addEventListener('close', function () {
         console.log("Web Socket closed");
     });
+    socket.addEventListener('message', function (evt) {
+        const eventData = JSON.parse(evt.data);
+        console.log(`Message ${eventData.type} accepted`);
+        if (events[eventData.type] !== undefined) {
+            const arr = events[eventData.type]
+            arr[1].call(arr[0], eventData.data);
+        }
+    });
+}
 
-    socket.addEventListener('message', listener);
+function on(type, handler, thisArg) {
+    events[type] = [thisArg, handler];
 }
 
 function send(type, data) {

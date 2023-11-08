@@ -34,7 +34,7 @@ function drawPlayers() {
     }
 }
 
-document.onkeydown = (event) => {
+document.onkeydown = function (event) {
     if (upKeys[event.key])
         send(PLAYER_KEY_DOWN, {inputId: "UP", state: true});
     if (downKeys[event.key])
@@ -45,7 +45,7 @@ document.onkeydown = (event) => {
         send(PLAYER_KEY_DOWN, {inputId: "LEFT", state: true});
 };
 
-document.onkeyup = (event) => {
+document.onkeyup = function (event) {
     if (upKeys[event.key])
         send(PLAYER_KEY_DOWN, {inputId: "UP", state: false});
     if (downKeys[event.key])
@@ -56,49 +56,48 @@ document.onkeyup = (event) => {
         send(PLAYER_KEY_DOWN, {inputId: "LEFT", state: false});
 };
 
-document.getElementById("loginBtn").onclick = () => {
+document.getElementById("loginBtn").onclick = function () {
     send(AUTHENTICATION, {"BEARER_TOKEN": "token1"});
 }
-document.getElementById("joinBtn").onclick = () => {
+document.getElementById("joinBtn").onclick = function () {
     send(CONNECT, {});
 }
-initializeWebsocket((evt) => {
-    const eventData = JSON.parse(evt.data);
-    console.log(`Message ${eventData.type} accepted`);
-    if (eventData.type === CONNECT_WAIT) {
-        debugMsg.innerText = "Wait"
-    }
-    if (eventData.type === AUTHENTICATION) {
-        debugMsg.innerText = "Authorized"
-        document.getElementById("joinBtn").removeAttribute("disabled");
-        document.getElementById("loginBtn").setAttribute("disabled","disabled");
-    }
-    if (eventData.type === CONNECT_SUCCESS) {
-        debugMsg.innerText = "Connected to game room"
-    }
-    if (eventData.type === ROOM_START) {
-        debugMsg.innerText = "Room started, please wait for battle start"
-    }
-    if (eventData.type === BATTLE_START) {
-        debugMsg.innerText = "Battle started"
-    }
-    if (eventData.type === FAILURE) {
-        debugMsg.innerText = "Internal error occurred"
-    }
-    if (eventData.type === INIT) {
-        initMsg.innerText = JSON.stringify(eventData.data);
-    }
-    if (eventData.type === UPDATE) {
-        clear();
-        players = eventData.data.players.reduce((map, obj) => {
-            map[obj.id] = obj;
-            return map;
-        }, {});
-        selfId = eventData.data.player.id;
-        playerStats.innerText = JSON.stringify(players[selfId]);
-        updateMsg.innerText = JSON.stringify(eventData.data);
-        clear();
-        drawPlayers();
-    }
-})
+initializeWebsocket();
+on(CONNECT_WAIT, function (evt) {
+    debugMsg.innerText = "Wait"
+});
+on(AUTHENTICATION, function (evt) {
+    debugMsg.innerText = "Authorized"
+    document.getElementById("joinBtn").removeAttribute("disabled");
+    document.getElementById("loginBtn").setAttribute("disabled", "disabled");
+});
+on(CONNECT_SUCCESS, function (evt) {
+    debugMsg.innerText = "Connected to game room"
+    document.getElementById("joinBtn").setAttribute("disabled", "disabled");
+});
+on(ROOM_START, function (evt) {
+    debugMsg.innerText = "Room started, please wait for battle start"
+});
+on(BATTLE_START, function (evt) {
+    debugMsg.innerText = "Battle started. Click on battlefield"
+});
+on(FAILURE, function (evt) {
+    debugMsg.innerText = "Internal error occurred"
+});
 
+on(INIT, function (evt) {
+    initMsg.innerText = JSON.stringify(evt);
+});
+
+on(UPDATE, function (evt) {
+    clear();
+    players = evt.players.reduce(function (map, obj) {
+        map[obj.id] = obj;
+        return map;
+    }, {});
+    selfId = evt.player.id;
+    playerStats.innerText = JSON.stringify(players[selfId]);
+    updateMsg.innerText = JSON.stringify(evt);
+    clear();
+    drawPlayers();
+});

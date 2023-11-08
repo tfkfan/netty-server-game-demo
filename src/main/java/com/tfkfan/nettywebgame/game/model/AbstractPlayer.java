@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @Accessors(chain = true)
 @Getter
 @Setter
-public abstract class AbstractPlayer< GR extends GameRoom,
+public abstract class AbstractPlayer<GR extends GameRoom,
         IP extends InitPack, UP extends UpdatePack, PUP extends PrivateUpdatePack>
         extends GameEntity<Long, GR, IP, UP> implements Player, Updatable, IPrivateUpdatePackGetter<PUP> {
     protected PlayerSession session;

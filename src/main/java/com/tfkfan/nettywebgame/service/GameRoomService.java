@@ -10,7 +10,6 @@ import com.tfkfan.nettywebgame.networking.message.Message;
 import com.tfkfan.nettywebgame.networking.message.impl.outcoming.OutcomingMessage;
 import com.tfkfan.nettywebgame.networking.mode.MainGameChannelMode;
 import com.tfkfan.nettywebgame.networking.session.PlayerSession;
-import com.tfkfan.nettywebgame.shared.WaitingPlayerSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,7 +27,7 @@ import static com.tfkfan.nettywebgame.shared.FrameUtil.eventToFrame;
 @Service
 public class GameRoomService {
     private final Map<UUID, DefaultGameRoom> gameRoomMap = new ConcurrentHashMap<>();
-    private final Queue<WaitingPlayerSession> sessionQueue = new ConcurrentLinkedQueue<>();
+    private final Queue<GameRoomJoinEvent> sessionQueue = new ConcurrentLinkedQueue<>();
 
     private final MainGameChannelMode gameChannelMode;
     private final PlayerFactory<Long, GameRoomJoinEvent, DefaultPlayer, DefaultGameRoom> playerFactory;
@@ -39,10 +38,10 @@ public class GameRoomService {
         return Optional.ofNullable(gameRoomMap.get(key));
     }
 
-    public void addPlayerToWait(PlayerSession playerSession, GameRoomJoinEvent initialData) {
+    public void addPlayerToWait(GameRoomJoinEvent event) {
         try {
-            sessionQueue.add(new WaitingPlayerSession(playerSession, initialData));
-            playerSession.getChannel().writeAndFlush(eventToFrame(new OutcomingMessage(Message.CONNECT_WAIT)));
+            sessionQueue.add(event);
+            event.getSession().getChannel().writeAndFlush(eventToFrame(new OutcomingMessage(Message.CONNECT_WAIT)));
 
             if (sessionQueue.size() < applicationProperties.getRoom().getMaxplayers())
                 return;
@@ -54,14 +53,14 @@ public class GameRoomService {
 
             final List<PlayerSession> playerSessions = new ArrayList<>();
             while (playerSessions.size() != applicationProperties.getRoom().getMaxplayers()) {
-                final WaitingPlayerSession waitingPlayerSession = sessionQueue.remove();
-                final PlayerSession ps = waitingPlayerSession.getPlayerSession();
-                final DefaultPlayer player = playerFactory.create(gameMap.nextPlayerId(), waitingPlayerSession.getInitialData(),
-                        room, ps);
+                final GameRoomJoinEvent evt = sessionQueue.remove();
+                final PlayerSession ps = evt.getSession();
+                final DefaultPlayer player = playerFactory.create(gameMap.nextPlayerId(), evt, room, ps);
                 ps.setRoomKey(room.key());
                 ps.setPlayer(player);
                 playerSessions.add(ps);
             }
+
             gameChannelMode.apply(playerSessions);
             room.onRoomCreated(playerSessions);
             schedulerService.scheduleAtFixedRate(room, applicationProperties.getRoom().getInitdelay(), applicationProperties.getRoom().getLooprate(), TimeUnit.MILLISECONDS);

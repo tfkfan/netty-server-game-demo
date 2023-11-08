@@ -29,7 +29,7 @@ public class OutOfRoomHandler extends AbstractHandler<IncomingPlayerMessage> {
     }
 
     protected void handleJoin(GameRoomJoinEvent event) {
-        gameRoomService.addPlayerToWait(PlayerSession.getPlayerSessionFromChannel(event.getChannel()), event);
+        gameRoomService.addPlayerToWait( event);
     }
 }
 

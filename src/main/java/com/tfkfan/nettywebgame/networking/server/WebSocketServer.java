@@ -35,7 +35,7 @@ public class WebSocketServer {
                 log.info("WebSocketSocket is closing...");
                 boss.shutdownGracefully();
                 worker.shutdownGracefully();
-            });
+            }).sync();
         } catch (Exception e) {
             log.error("Start server exception:{}", e.getMessage());
             throw new RuntimeException(e);
