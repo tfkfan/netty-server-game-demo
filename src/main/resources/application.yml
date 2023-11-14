@@ -2,5 +2,7 @@ application:
   server:
     port: 8081
   room:
-    maxp-layers: 1
+    max-players: 1
     loop-rate: 100
+server:
+  port: 8080

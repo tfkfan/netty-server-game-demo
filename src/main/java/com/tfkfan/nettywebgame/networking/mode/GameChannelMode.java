@@ -16,7 +16,4 @@ public interface GameChannelMode {
                boolean clearExistingProtocolHandlers);
 
    <T extends Session> void apply(Collection<T> playerSessions);
-
-    <T extends Session> void apply(Collection<T> playerSessions,
-               boolean clearExistingProtocolHandlers);
 }

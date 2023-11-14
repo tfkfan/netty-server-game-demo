@@ -1,4 +1,4 @@
-package com.tfkfan.nettywebgame.networking.server.adapter;
+package com.tfkfan.nettywebgame.networking.adapter;
 
 import com.google.gson.Gson;
 import com.tfkfan.nettywebgame.networking.message.Message;
@@ -13,6 +13,7 @@ import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Objects;
 
 @Sharable
 @Component
@@ -22,9 +23,8 @@ public class TextWebsocketDecoder extends MessageToMessageDecoder<TextWebSocketF
     @Override
     protected void decode(ChannelHandlerContext ctx, TextWebSocketFrame frame, List<Object> out) {
         final String json = frame.text();
-
-        PlayerSession ps = PlayerSession.getPlayerSessionFromChannel(ctx.channel());
-        if (null != ps) {
+        final PlayerSession ps = PlayerSession.getPlayerSessionFromChannel(ctx.channel());
+        if (Objects.nonNull(ps)) {
             PlayerMessage playerMsg = gson.fromJson(json, IncomingPlayerMessage.class);
             playerMsg.setSession(ps);
             out.add(playerMsg);

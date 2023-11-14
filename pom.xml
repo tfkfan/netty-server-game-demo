@@ -10,16 +10,10 @@
     <packaging>jar</packaging>
 
     <properties>
-        <spring.boot.version>3.1.2</spring.boot.version>
-        <netty.version>4.1.95.Final</netty.version>
+        <spring.boot.version>3.1.5</spring.boot.version>
+        <netty.version>4.1.101.Final</netty.version>
     </properties>
 
-    <repositories>
-        <repository>
-            <id>apache.snapshot</id>
-            <url>https://repository.apache.org/content/repositories/snapshots/</url>
-        </repository>
-    </repositories>
     <dependencies>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -32,9 +26,10 @@
             <version>${netty.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>2.12.7.1</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <version>${spring.boot.version}</version>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

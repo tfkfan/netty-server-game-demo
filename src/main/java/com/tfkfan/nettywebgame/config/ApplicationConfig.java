@@ -11,7 +11,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 @EnableScheduling
 @Configuration
 @RequiredArgsConstructor
-public class ServerConfig {
+public class ApplicationConfig {
     private final ApplicationProperties applicationProperties;
     @Bean
     public ScheduledExecutorService taskManagerService(){

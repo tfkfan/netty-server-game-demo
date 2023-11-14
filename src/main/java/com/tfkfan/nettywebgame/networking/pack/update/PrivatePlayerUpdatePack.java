@@ -1,4 +1,4 @@
-package com.tfkfan.nettywebgame.networking.pack.privat;
+package com.tfkfan.nettywebgame.networking.pack.update;
 
 import com.tfkfan.nettywebgame.networking.pack.PrivateUpdatePack;
 import lombok.AllArgsConstructor;

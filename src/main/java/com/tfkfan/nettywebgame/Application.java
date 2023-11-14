@@ -1,6 +1,6 @@
 package com.tfkfan.nettywebgame;
 
-import com.tfkfan.nettywebgame.networking.server.WebSocketServer;
+import com.tfkfan.nettywebgame.networking.WebSocketServer;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

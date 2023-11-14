@@ -10,7 +10,6 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author Baltser Artem tfkfan
  */
-
 public class GameMap {
     private final Map<Long, DefaultPlayer> players = new ConcurrentHashMap<>();
 

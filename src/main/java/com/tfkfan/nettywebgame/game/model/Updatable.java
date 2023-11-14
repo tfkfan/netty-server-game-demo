@@ -1,4 +1,4 @@
-package com.tfkfan.nettywebgame.networking.pack;
+package com.tfkfan.nettywebgame.game.model;
 
 public interface Updatable {
     void update();

@@ -20,7 +20,7 @@ public class OutcomingPlayerMessage extends OutcomingMessage implements PlayerMe
     }
 
     @Override
-    public PlayerSession getSession() {
+    public PlayerSession session() {
         return playerSession;
     }
 

@@ -1,24 +1,23 @@
 package com.tfkfan.nettywebgame.networking.mode;
 
+import com.tfkfan.nettywebgame.networking.adapter.TextWebsocketDecoder;
+import com.tfkfan.nettywebgame.networking.adapter.TextWebsocketEncoder;
+import com.tfkfan.nettywebgame.networking.handler.GameGameHandler;
 import com.tfkfan.nettywebgame.networking.session.Session;
-import com.tfkfan.nettywebgame.networking.server.adapter.TextWebsocketDecoder;
-import com.tfkfan.nettywebgame.networking.server.adapter.TextWebsocketEncoder;
-import com.tfkfan.nettywebgame.networking.server.handler.GameHandler;
 import com.tfkfan.nettywebgame.shared.ChannelUtil;
 import com.tfkfan.nettywebgame.shared.ServerConstants;
 import io.netty.channel.ChannelPipeline;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-
 @Slf4j
 @Component
 public class MainGameChannelMode extends AbstractGameChannelMode {
     private final TextWebsocketDecoder textWebsocketDecoder;
     private final TextWebsocketEncoder textWebsocketEncoder;
-    private final GameHandler baseGameHandler;
+    private final GameGameHandler baseGameHandler;
 
-    public MainGameChannelMode(TextWebsocketDecoder textWebsocketDecoder, TextWebsocketEncoder textWebsocketEncoder, GameHandler baseGameHandler) {
+    public MainGameChannelMode(TextWebsocketDecoder textWebsocketDecoder, TextWebsocketEncoder textWebsocketEncoder, GameGameHandler baseGameHandler) {
         super(com.tfkfan.nettywebgame.networking.mode.GameChannelMode.GAME_CHANNEL_MODE);
         this.textWebsocketDecoder = textWebsocketDecoder;
         this.textWebsocketEncoder = textWebsocketEncoder;

@@ -1,11 +1,10 @@
 package com.tfkfan.nettywebgame.game.model;
 
-import com.tfkfan.nettywebgame.networking.pack.Initializable;
 import com.tfkfan.nettywebgame.game.room.GameRoom;
 import com.tfkfan.nettywebgame.networking.pack.InitPack;
 import com.tfkfan.nettywebgame.networking.pack.UpdatePack;
-import com.tfkfan.nettywebgame.networking.pack.init.IInitPackGetter;
-import com.tfkfan.nettywebgame.networking.pack.update.IUpdatePackGetter;
+import com.tfkfan.nettywebgame.networking.pack.IInitPackSupplier;
+import com.tfkfan.nettywebgame.networking.pack.IUpdatePackSupplier;
 import com.tfkfan.nettywebgame.shared.Vector;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,8 +16,8 @@ import lombok.experimental.Accessors;
 public abstract class GameEntity<ID,GR extends GameRoom,
         IP extends InitPack, UP extends UpdatePack> extends AbstractEntity<ID>  implements
         Initializable<IP>,
-        IUpdatePackGetter<UP>,
-        IInitPackGetter<IP> {
+        IUpdatePackSupplier<UP>,
+        IInitPackSupplier<IP> {
 
     protected Boolean isMoving;
     protected Boolean isAlive;

@@ -1,4 +1,4 @@
-package com.tfkfan.nettywebgame.networking.server;
+package com.tfkfan.nettywebgame.networking;
 
 import com.tfkfan.nettywebgame.config.ApplicationProperties;
 import com.tfkfan.nettywebgame.networking.mode.DefaultWebsocketInitializer;

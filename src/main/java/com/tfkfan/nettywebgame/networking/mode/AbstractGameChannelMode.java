@@ -1,6 +1,5 @@
 package com.tfkfan.nettywebgame.networking.mode;
 
-import com.tfkfan.nettywebgame.networking.mode.GameChannelMode;
 import com.tfkfan.nettywebgame.networking.session.Session;
 import com.tfkfan.nettywebgame.shared.ChannelUtil;
 import io.netty.channel.ChannelPipeline;
@@ -33,10 +32,5 @@ public abstract class AbstractGameChannelMode implements GameChannelMode {
     @Override
     public  <T extends Session> void apply(Collection<T> playerSessions) {
         playerSessions.forEach(this::apply);
-    }
-
-    @Override
-    public  <T extends Session> void apply(Collection<T> playerSessions, boolean clearExistingProtocolHandlers) {
-        playerSessions.forEach(playerSession -> apply(playerSession, clearExistingProtocolHandlers));
     }
 }

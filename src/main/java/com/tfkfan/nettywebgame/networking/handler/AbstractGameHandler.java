@@ -1,10 +1,11 @@
-package com.tfkfan.nettywebgame.networking.server.handler;
+package com.tfkfan.nettywebgame.networking.handler;
 
 
 import com.tfkfan.nettywebgame.event.Event;
 import com.tfkfan.nettywebgame.event.dispatcher.EventDispatcher;
 import com.tfkfan.nettywebgame.event.listener.EventListener;
 import com.tfkfan.nettywebgame.networking.message.Message;
+import com.tfkfan.nettywebgame.networking.message.MessageType;
 import com.tfkfan.nettywebgame.networking.message.impl.outcoming.OutcomingMessage;
 import com.tfkfan.nettywebgame.networking.pack.shared.ExceptionPack;
 import com.tfkfan.nettywebgame.shared.FrameUtil;
@@ -15,10 +16,10 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public abstract class AbstractHandler<T extends Message> extends SimpleChannelInboundHandler<T> {
+public abstract class AbstractGameHandler<T extends Message> extends SimpleChannelInboundHandler<T> {
     private final EventDispatcher<T> eventDispatcher;
 
-    protected AbstractHandler(EventDispatcher<T> eventDispatcher) {
+    protected AbstractGameHandler(EventDispatcher<T> eventDispatcher) {
         this.eventDispatcher = eventDispatcher;
     }
 
@@ -39,17 +40,17 @@ public abstract class AbstractHandler<T extends Message> extends SimpleChannelIn
 
     protected void closeChannelWithFailure(ChannelHandlerContext ctx, String message) {
         Channel channel = ctx.channel();
-        channel.writeAndFlush(FrameUtil.eventToFrame(new OutcomingMessage(Message.FAILURE, new ExceptionPack(message))))
+        channel.writeAndFlush(FrameUtil.eventToFrame(new OutcomingMessage(MessageType.FAILURE, new ExceptionPack(message))))
                 .addListener(ChannelFutureListener.CLOSE);
     }
 
     protected void closeChannelWithFailure(Channel channel, String message) {
-        channel.writeAndFlush(FrameUtil.eventToFrame(new OutcomingMessage(Message.FAILURE, new ExceptionPack(message))))
+        channel.writeAndFlush(FrameUtil.eventToFrame(new OutcomingMessage(MessageType.FAILURE, new ExceptionPack(message))))
                 .addListener(ChannelFutureListener.CLOSE);
     }
 
     protected void sendFailure(ChannelHandlerContext ctx, String message) {
-        send(ctx.channel(), new OutcomingMessage(Message.FAILURE, new ExceptionPack(message)));
+        send(ctx.channel(), new OutcomingMessage(MessageType.FAILURE, new ExceptionPack(message)));
     }
 
     @Override

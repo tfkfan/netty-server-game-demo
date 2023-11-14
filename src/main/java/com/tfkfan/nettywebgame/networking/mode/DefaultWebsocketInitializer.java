@@ -1,8 +1,8 @@
 package com.tfkfan.nettywebgame.networking.mode;
 
-import com.tfkfan.nettywebgame.networking.server.adapter.TextWebsocketDecoder;
-import com.tfkfan.nettywebgame.networking.server.handler.InitialHandler;
-import com.tfkfan.nettywebgame.networking.server.handler.PingPongWebsocketHandler;
+import com.tfkfan.nettywebgame.networking.adapter.TextWebsocketDecoder;
+import com.tfkfan.nettywebgame.networking.handler.InitialGameHandler;
+import com.tfkfan.nettywebgame.networking.handler.PingPongWebsocketHandler;
 import com.tfkfan.nettywebgame.shared.ServerConstants;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
@@ -15,11 +15,11 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class DefaultWebsocketInitializer extends ChannelInitializer<Channel> {
-    private final InitialHandler webSocketHandlerMain;
+    private final InitialGameHandler webSocketHandlerMain;
     private final PingPongWebsocketHandler pingPongWebsocketHandler;
     private final TextWebsocketDecoder textWebsocketDecoder;
 
-    public DefaultWebsocketInitializer(InitialHandler webSocketHandlerMain, PingPongWebsocketHandler pingPongWebsocketHandler, TextWebsocketDecoder textWebsocketDecoder) {
+    public DefaultWebsocketInitializer(InitialGameHandler webSocketHandlerMain, PingPongWebsocketHandler pingPongWebsocketHandler, TextWebsocketDecoder textWebsocketDecoder) {
         this.webSocketHandlerMain = webSocketHandlerMain;
         this.pingPongWebsocketHandler = pingPongWebsocketHandler;
         this.textWebsocketDecoder = textWebsocketDecoder;

@@ -1,4 +1,4 @@
-package com.tfkfan.nettywebgame.networking.server.adapter;
+package com.tfkfan.nettywebgame.networking.adapter;
 
 import com.google.gson.Gson;
 import com.tfkfan.nettywebgame.networking.message.Message;

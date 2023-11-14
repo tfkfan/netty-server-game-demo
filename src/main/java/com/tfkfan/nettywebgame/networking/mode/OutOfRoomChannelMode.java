@@ -1,8 +1,8 @@
 package com.tfkfan.nettywebgame.networking.mode;
 
-import com.tfkfan.nettywebgame.networking.server.adapter.TextWebsocketDecoder;
-import com.tfkfan.nettywebgame.networking.server.adapter.TextWebsocketEncoder;
-import com.tfkfan.nettywebgame.networking.server.handler.OutOfRoomHandler;
+import com.tfkfan.nettywebgame.networking.adapter.TextWebsocketDecoder;
+import com.tfkfan.nettywebgame.networking.adapter.TextWebsocketEncoder;
+import com.tfkfan.nettywebgame.networking.handler.OutOfRoomGameHandler;
 import com.tfkfan.nettywebgame.networking.session.Session;
 import com.tfkfan.nettywebgame.shared.ChannelUtil;
 import com.tfkfan.nettywebgame.shared.ServerConstants;
@@ -16,9 +16,9 @@ import org.springframework.stereotype.Component;
 public class OutOfRoomChannelMode extends AbstractGameChannelMode {
     private final TextWebsocketDecoder textWebsocketDecoder;
     private final TextWebsocketEncoder textWebsocketEncoder;
-    private final OutOfRoomHandler handler;
+    private final OutOfRoomGameHandler handler;
 
-    public OutOfRoomChannelMode(TextWebsocketDecoder textWebsocketDecoder, TextWebsocketEncoder textWebsocketEncoder, OutOfRoomHandler handler) {
+    public OutOfRoomChannelMode(TextWebsocketDecoder textWebsocketDecoder, TextWebsocketEncoder textWebsocketEncoder, OutOfRoomGameHandler handler) {
         super(GameChannelMode.OUT_OF_ROOM_CHANNEL_MODE);
         this.textWebsocketDecoder = textWebsocketDecoder;
         this.textWebsocketEncoder = textWebsocketEncoder;

@@ -1,15 +1,11 @@
 package com.tfkfan.nettywebgame.game.room;
 
-import com.google.gson.Gson;
-import com.tfkfan.nettywebgame.event.Event;
-import com.tfkfan.nettywebgame.event.listener.EventListener;
 import com.tfkfan.nettywebgame.networking.message.Message;
-import com.tfkfan.nettywebgame.networking.message.PlayerMessage;
+import com.tfkfan.nettywebgame.networking.message.MessageType;
 import com.tfkfan.nettywebgame.networking.message.impl.outcoming.OutcomingMessage;
 import com.tfkfan.nettywebgame.networking.session.PlayerSession;
 import com.tfkfan.nettywebgame.networking.session.Session;
 import com.tfkfan.nettywebgame.service.GameRoomService;
-import com.tfkfan.nettywebgame.shared.Constants;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
@@ -31,7 +27,7 @@ public abstract class AbstractGameRoom implements GameRoom {
     public void onRoomCreated(List<PlayerSession> playerSessions) {
         for (PlayerSession playerSession : playerSessions) {
             sessions.put(playerSession.getId(), playerSession);
-            sendBroadcast(new OutcomingMessage(Message.MESSAGE,
+            sendBroadcast(new OutcomingMessage(MessageType.MESSAGE,
                     playerSession.getPlayer().getId() + " successfully joined"));
         }
     }
@@ -40,7 +36,7 @@ public abstract class AbstractGameRoom implements GameRoom {
     public void onDestroy(List<PlayerSession> playerSessions) {
         for (PlayerSession playerSession : playerSessions) {
             sessions.remove(playerSession.getId());
-            sendBroadcast(new OutcomingMessage(Message.MESSAGE,
+            sendBroadcast(new OutcomingMessage(MessageType.MESSAGE,
                     playerSession.getPlayer().getId() + " left"));
         }
     }

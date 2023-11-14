@@ -2,7 +2,7 @@ package com.tfkfan.nettywebgame.game.model;
 
 import com.tfkfan.nettywebgame.game.room.DefaultGameRoom;
 import com.tfkfan.nettywebgame.networking.pack.init.PlayerInitPack;
-import com.tfkfan.nettywebgame.networking.pack.privat.PrivatePlayerUpdatePack;
+import com.tfkfan.nettywebgame.networking.pack.update.PrivatePlayerUpdatePack;
 import com.tfkfan.nettywebgame.networking.pack.update.PlayerUpdatePack;
 import com.tfkfan.nettywebgame.networking.session.PlayerSession;
 import com.tfkfan.nettywebgame.shared.Constants;

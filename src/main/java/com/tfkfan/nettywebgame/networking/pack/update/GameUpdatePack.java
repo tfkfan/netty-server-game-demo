@@ -1,7 +1,6 @@
 package com.tfkfan.nettywebgame.networking.pack.update;
 
 import com.tfkfan.nettywebgame.networking.pack.UpdatePack;
-import com.tfkfan.nettywebgame.networking.pack.privat.PrivatePlayerUpdatePack;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

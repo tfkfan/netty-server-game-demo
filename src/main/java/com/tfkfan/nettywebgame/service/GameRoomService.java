@@ -6,7 +6,7 @@ import com.tfkfan.nettywebgame.game.factory.PlayerFactory;
 import com.tfkfan.nettywebgame.game.map.GameMap;
 import com.tfkfan.nettywebgame.game.model.DefaultPlayer;
 import com.tfkfan.nettywebgame.game.room.DefaultGameRoom;
-import com.tfkfan.nettywebgame.networking.message.Message;
+import com.tfkfan.nettywebgame.networking.message.MessageType;
 import com.tfkfan.nettywebgame.networking.message.impl.outcoming.OutcomingMessage;
 import com.tfkfan.nettywebgame.networking.mode.MainGameChannelMode;
 import com.tfkfan.nettywebgame.networking.session.PlayerSession;
@@ -41,7 +41,7 @@ public class GameRoomService {
     public void addPlayerToWait(GameRoomJoinEvent event) {
         try {
             sessionQueue.add(event);
-            event.getSession().getChannel().writeAndFlush(eventToFrame(new OutcomingMessage(Message.CONNECT_WAIT)));
+            event.getSession().getChannel().writeAndFlush(eventToFrame(new OutcomingMessage(MessageType.CONNECT_WAIT)));
 
             if (sessionQueue.size() < applicationProperties.getRoom().getMaxplayers())
                 return;

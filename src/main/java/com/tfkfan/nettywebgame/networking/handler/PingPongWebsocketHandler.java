@@ -1,4 +1,4 @@
-package com.tfkfan.nettywebgame.networking.server.handler;
+package com.tfkfan.nettywebgame.networking.handler;
 
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;

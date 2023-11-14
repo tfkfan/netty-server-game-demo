@@ -31,7 +31,7 @@ public class EventDispatcher<T extends Message> {
         Event event = objectMapper.fromJson(message.getData() != null ? message.getData().toString() : "{}",
                 typeToEventType.get(message.getType()));
         if (event instanceof AbstractPlayerEvent && message instanceof PlayerMessage)
-            ((AbstractPlayerEvent) event).setSession(((PlayerMessage) message).getSession());
+            ((AbstractPlayerEvent) event).setSession(((PlayerMessage) message).session());
         if (event instanceof AbstractEvent)
             ((AbstractEvent) event).setChannel(ctx.channel());
 
