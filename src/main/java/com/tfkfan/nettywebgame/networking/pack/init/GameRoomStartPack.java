@@ -1,4 +1,4 @@
-package com.tfkfan.nettywebgame.networking.pack.shared;
+package com.tfkfan.nettywebgame.networking.pack.init;
 
 import com.tfkfan.nettywebgame.networking.pack.InitPack;
 import lombok.AllArgsConstructor;

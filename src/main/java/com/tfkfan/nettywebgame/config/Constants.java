@@ -7,4 +7,6 @@ public interface Constants {
     Long ROOM_START_DELAY = 5000L;
     Long ROOM_INIT_DELAY = 5000L;
     Long MAX_PLAYERS = 20L;
+
+    Long END_DELAY = 1000L*60*5;
 }

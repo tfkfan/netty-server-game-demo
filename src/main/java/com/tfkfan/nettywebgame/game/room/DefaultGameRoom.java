@@ -8,13 +8,13 @@ import com.tfkfan.nettywebgame.networking.message.MessageType;
 import com.tfkfan.nettywebgame.networking.message.impl.outcoming.OutcomingMessage;
 import com.tfkfan.nettywebgame.networking.message.impl.outcoming.OutcomingPlayerMessage;
 import com.tfkfan.nettywebgame.networking.pack.init.GameInitPack;
-import com.tfkfan.nettywebgame.networking.pack.shared.GameRoomStartPack;
-import com.tfkfan.nettywebgame.networking.pack.shared.GameSettingsPack;
+import com.tfkfan.nettywebgame.networking.pack.init.GameRoomStartPack;
+import com.tfkfan.nettywebgame.networking.pack.init.GameSettingsPack;
 import com.tfkfan.nettywebgame.networking.pack.update.GameUpdatePack;
 import com.tfkfan.nettywebgame.networking.pack.update.PlayerUpdatePack;
 import com.tfkfan.nettywebgame.networking.pack.update.PrivatePlayerUpdatePack;
 import com.tfkfan.nettywebgame.networking.session.PlayerSession;
-import com.tfkfan.nettywebgame.service.GameRoomService;
+import com.tfkfan.nettywebgame.service.GameRoomManagementService;
 import com.tfkfan.nettywebgame.game.model.Direction;
 import com.tfkfan.nettywebgame.game.model.Vector;
 import lombok.extern.slf4j.Slf4j;
@@ -36,15 +36,14 @@ public class DefaultGameRoom extends AbstractGameRoom {
 
     private final AtomicBoolean started = new AtomicBoolean(false);
 
-    private final ScheduledExecutorService schedulerService;
+
     private final RoomProperties roomProperties;
 
     public DefaultGameRoom(GameMap gameMap, UUID gameRoomId,
-                           GameRoomService gameRoomService, ScheduledExecutorService schedulerService,
+                           GameRoomManagementService gameRoomManagementService, ScheduledExecutorService schedulerService,
                            RoomProperties roomProperties) {
-        super(gameRoomId, gameRoomService);
+        super(gameRoomId, gameRoomManagementService, schedulerService);
         this.gameMap = gameMap;
-        this.schedulerService = schedulerService;
         this.roomProperties = roomProperties;
     }
 
@@ -59,9 +58,9 @@ public class DefaultGameRoom extends AbstractGameRoom {
             super.onRoomCreated(playerSessions);
         }
 
-        sendBroadcast(ps -> new OutcomingMessage(MessageType.CONNECT_SUCCESS,
+        sendBroadcast(ps -> new OutcomingMessage(MessageType.JOIN_SUCCESS,
                 new GameSettingsPack(
-                        roomProperties.getLooprate())));
+                        roomProperties.getLoopRate())));
         log.info("Room {} has been created", key());
     }
 
@@ -69,8 +68,8 @@ public class DefaultGameRoom extends AbstractGameRoom {
     public void onRoomStarted() {
         this.started.set(false);
         sendBroadcast(new OutcomingMessage(MessageType.ROOM_START,
-                new GameRoomStartPack(OffsetDateTime.now().plus(roomProperties.getStartdelay(), ChronoUnit.MILLIS).toInstant().toEpochMilli())));
-        schedulerService.schedule(this::onBattleStarted, roomProperties.getStartdelay(), TimeUnit.MILLISECONDS);
+                new GameRoomStartPack(OffsetDateTime.now().plus(roomProperties.getStartDelay(), ChronoUnit.MILLIS).toInstant().toEpochMilli())));
+        schedulerService.schedule(this::onBattleStarted, roomProperties.getStartDelay(), TimeUnit.MILLISECONDS);
         log.info("Room {} has been started", key());
     }
 
@@ -79,6 +78,11 @@ public class DefaultGameRoom extends AbstractGameRoom {
         log.info("Room {}. Battle has been started", key());
         this.started.set(true);
         sendBroadcast((s) -> new OutcomingPlayerMessage(MessageType.BATTLE_START));
+    }
+
+    @Override
+    public void onBattleEnd() {
+        sendBroadcast(new OutcomingMessage(MessageType.ROOM_CLOSE));
     }
 
     //room's game loop
@@ -114,7 +118,7 @@ public class DefaultGameRoom extends AbstractGameRoom {
         PlayerSession session = initEvent.getSession();
         send(session, new OutcomingPlayerMessage(session, MessageType.INIT,
                 new GameInitPack(((DefaultPlayer) session.getPlayer()).getInitPack(),
-                        roomProperties.getLooprate(),
+                        roomProperties.getLoopRate(),
                         gameMap.alivePlayers())));
     }
 

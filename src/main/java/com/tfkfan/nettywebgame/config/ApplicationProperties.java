@@ -12,10 +12,11 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationPropertiesScan
 public class ApplicationProperties {
     public static @Data @NoArgsConstructor class RoomProperties {
-        private Long looprate = Constants.DEFAULT_LOOPRATE;
-        private Long initdelay = Constants.ROOM_INIT_DELAY;
-        private Long startdelay = Constants.ROOM_START_DELAY;
-        private Long maxplayers = Constants.MAX_PLAYERS;
+        private Long loopRate = Constants.DEFAULT_LOOPRATE;
+        private Long initDelay = Constants.ROOM_INIT_DELAY;
+        private Long startDelay = Constants.ROOM_START_DELAY;
+        private Long maxPlayers = Constants.MAX_PLAYERS;
+        private Long endDelay = Constants.END_DELAY;
     }
 
     public static @Data @NoArgsConstructor class ServerProperties {

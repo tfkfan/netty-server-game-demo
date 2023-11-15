@@ -5,22 +5,46 @@ import com.tfkfan.nettywebgame.networking.message.MessageType;
 import com.tfkfan.nettywebgame.networking.message.impl.outcoming.OutcomingMessage;
 import com.tfkfan.nettywebgame.networking.session.PlayerSession;
 import com.tfkfan.nettywebgame.networking.session.Session;
-import com.tfkfan.nettywebgame.service.GameRoomService;
+import com.tfkfan.nettywebgame.service.GameRoomManagementService;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Slf4j
 public abstract class AbstractGameRoom implements GameRoom {
     private final UUID gameRoomId;
     protected Map<UUID, PlayerSession> sessions = new ConcurrentHashMap<>();
-    protected GameRoomService gameRoomService;
+    protected final GameRoomManagementService gameRoomManagementService;
+    protected final ScheduledExecutorService schedulerService;
 
-    protected AbstractGameRoom(UUID gameRoomId, GameRoomService gameRoomService) {
+    private List<ScheduledFuture<?>> futureList = new ArrayList<>();
+
+    protected AbstractGameRoom(UUID gameRoomId, GameRoomManagementService gameRoomManagementService, ScheduledExecutorService schedulerService) {
         this.gameRoomId = gameRoomId;
-        this.gameRoomService = gameRoomService;
+        this.gameRoomManagementService = gameRoomManagementService;
+        this.schedulerService = schedulerService;
+    }
+
+    @Override
+    public ScheduledExecutorService getRoomExecutorService() {
+        return schedulerService;
+    }
+
+    @Override
+    public void start(long initialDelay, long startDelay, long endDelay, long loopRate) {
+        futureList.add(schedulerService.scheduleAtFixedRate(this,
+                initialDelay, loopRate, TimeUnit.MILLISECONDS));
+        schedulerService.schedule(() -> {
+            onBattleEnd();
+            gameRoomManagementService.onBattleEnd(this);
+        }, endDelay + startDelay, TimeUnit.MILLISECONDS);
+        onRoomStarted();
     }
 
     @Override
@@ -72,8 +96,14 @@ public abstract class AbstractGameRoom implements GameRoom {
     }
 
     @Override
-    public synchronized void close() {
-        sessions.values().forEach(this::onDisconnect);
+    public Collection<PlayerSession> close() {
+        futureList.forEach(future -> future.cancel(true));
+        List<PlayerSession> sessionList = sessions
+                .values()
+                .stream()
+                .toList();
+        onDestroy(sessionList);
+        return sessionList;
     }
 
     @Override

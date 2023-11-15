@@ -17,28 +17,24 @@ import org.springframework.stereotype.Component;
 public class WebSocketServer {
     private final ApplicationProperties applicationProperties;
     private final DefaultWebsocketInitializer customWebSocketServerInitializer;
-    public void start() {
+
+    public void start() throws InterruptedException {
         log.info("WebSocketServer is starting...");
         log.info("Reserved {} threads", applicationProperties.getServer().getWorkerThreads()
                 + applicationProperties.getServer().getEventLoopThreads()
                 + applicationProperties.getServer().getGameThreads());
         EventLoopGroup boss = new NioEventLoopGroup(applicationProperties.getServer().getEventLoopThreads());
         EventLoopGroup worker = new NioEventLoopGroup(applicationProperties.getServer().getWorkerThreads());
-        try {
-            ServerBootstrap boot = new ServerBootstrap();
-            boot.group(boss, worker)
-                    .channel(NioServerSocketChannel.class)
-                    .childHandler(customWebSocketServerInitializer);
-            ChannelFuture future = boot.bind(applicationProperties.getServer().getPort()).sync();
-            future.addListener(evt -> log.info("Started ws server, active port:{}", applicationProperties.getServer().getPort()));
-            future.channel().closeFuture().addListener((evt) -> {
-                log.info("WebSocketSocket is closing...");
-                boss.shutdownGracefully();
-                worker.shutdownGracefully();
-            }).sync();
-        } catch (Exception e) {
-            log.error("Start server exception:{}", e.getMessage());
-            throw new RuntimeException(e);
-        }
+        ServerBootstrap boot = new ServerBootstrap();
+        boot.group(boss, worker)
+                .channel(NioServerSocketChannel.class)
+                .childHandler(customWebSocketServerInitializer);
+        ChannelFuture future = boot.bind(applicationProperties.getServer().getPort()).sync();
+        future.addListener(evt -> log.info("Started ws server, active port:{}", applicationProperties.getServer().getPort()));
+        future.channel().closeFuture().addListener((evt) -> {
+            log.info("WebSocketSocket is closing...");
+            boss.shutdownGracefully();
+            worker.shutdownGracefully();
+        }).sync();
     }
 }

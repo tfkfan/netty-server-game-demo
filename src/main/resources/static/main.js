@@ -69,10 +69,10 @@ document.getElementById("loginBtn").onclick = function () {
     send(AUTHENTICATION, {"BEARER_TOKEN": "token1"});
 }
 document.getElementById("joinBtn").onclick = function () {
-    send(CONNECT, {});
+    send(JOIN, {});
 }
 initializeWebsocket();
-on(CONNECT_WAIT, function (evt) {
+on(JOIN_WAIT, function (evt) {
     debugMsg.innerText = "Wait"
 });
 on(AUTHENTICATION, function (evt) {
@@ -80,12 +80,17 @@ on(AUTHENTICATION, function (evt) {
     document.getElementById("joinBtn").removeAttribute("disabled");
     document.getElementById("loginBtn").setAttribute("disabled", "disabled");
 });
-on(CONNECT_SUCCESS, function (evt) {
+on(JOIN_SUCCESS, function (evt) {
     debugMsg.innerText = "Connected to game room"
     document.getElementById("joinBtn").setAttribute("disabled", "disabled");
 });
 on(ROOM_START, function (evt) {
     debugMsg.innerText = "Room started, please wait for battle start"
+});
+
+on(ROOM_CLOSE, function (evt) {
+    debugMsg.innerText = "Room closed."
+    document.getElementById("joinBtn").removeAttribute("disabled");
 });
 on(BATTLE_START, function (evt) {
     const msg = "Battle started. Click on battlefield.\nUse WASD to move."

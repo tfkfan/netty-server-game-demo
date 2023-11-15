@@ -8,14 +8,19 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Function;
 
 public interface GameRoom extends Runnable {
+    void start(long initialDelay, long startDelay, long endDelay, long loopRate);
+
     void onRoomCreated(List<PlayerSession> playerSessions);
 
     void onRoomStarted();
 
     void onBattleStarted();
+
+    void onBattleEnd();
 
     void onDestroy(List<PlayerSession> playerSessions);
 
@@ -38,5 +43,7 @@ public interface GameRoom extends Runnable {
 
     void sendBroadcast(Function<PlayerSession, Message> function);
 
-    void close();
+    Collection<PlayerSession> close();
+
+    ScheduledExecutorService getRoomExecutorService();
 }

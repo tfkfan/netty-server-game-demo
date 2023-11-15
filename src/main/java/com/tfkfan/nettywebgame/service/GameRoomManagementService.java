@@ -6,9 +6,12 @@ import com.tfkfan.nettywebgame.game.factory.PlayerFactory;
 import com.tfkfan.nettywebgame.game.map.GameMap;
 import com.tfkfan.nettywebgame.game.model.DefaultPlayer;
 import com.tfkfan.nettywebgame.game.room.DefaultGameRoom;
+import com.tfkfan.nettywebgame.game.room.GameRoom;
+import com.tfkfan.nettywebgame.networking.handler.OutOfRoomGameHandler;
 import com.tfkfan.nettywebgame.networking.message.MessageType;
 import com.tfkfan.nettywebgame.networking.message.impl.outcoming.OutcomingMessage;
 import com.tfkfan.nettywebgame.networking.mode.MainGameChannelMode;
+import com.tfkfan.nettywebgame.networking.mode.OutOfRoomChannelMode;
 import com.tfkfan.nettywebgame.networking.session.PlayerSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,11 +26,12 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class GameRoomService {
+public class GameRoomManagementService {
     private final Map<UUID, DefaultGameRoom> gameRoomMap = new ConcurrentHashMap<>();
     private final Queue<GameRoomJoinEvent> sessionQueue = new ConcurrentLinkedQueue<>();
 
     private final MainGameChannelMode gameChannelMode;
+    private final OutOfRoomChannelMode outOfRoomChannelMode;
     private final PlayerFactory<Long, GameRoomJoinEvent, DefaultPlayer, DefaultGameRoom> playerFactory;
     private final ApplicationProperties applicationProperties;
     private final ScheduledExecutorService schedulerService;
@@ -39,18 +43,18 @@ public class GameRoomService {
     public void addPlayerToWait(GameRoomJoinEvent event) {
         try {
             sessionQueue.add(event);
-            event.getSession().getChannel().writeAndFlush(new OutcomingMessage(MessageType.CONNECT_WAIT));
+            event.getSession().getChannel().writeAndFlush(new OutcomingMessage(MessageType.JOIN_WAIT));
 
-            if (sessionQueue.size() < applicationProperties.getRoom().getMaxplayers())
+            if (sessionQueue.size() < applicationProperties.getRoom().getMaxPlayers())
                 return;
 
             final GameMap gameMap = new GameMap();
             final DefaultGameRoom room = new DefaultGameRoom(gameMap,
-                    UUID.randomUUID(), GameRoomService.this, schedulerService, applicationProperties.getRoom());
+                    UUID.randomUUID(), GameRoomManagementService.this, schedulerService, applicationProperties.getRoom());
             gameRoomMap.put(room.key(), room);
 
             final List<PlayerSession> playerSessions = new ArrayList<>();
-            while (playerSessions.size() != applicationProperties.getRoom().getMaxplayers()) {
+            while (playerSessions.size() != applicationProperties.getRoom().getMaxPlayers()) {
                 final GameRoomJoinEvent evt = sessionQueue.remove();
                 final PlayerSession ps = evt.getSession();
                 final DefaultPlayer player = playerFactory.create(gameMap.nextPlayerId(), evt, room, ps);
@@ -61,10 +65,21 @@ public class GameRoomService {
 
             gameChannelMode.apply(playerSessions);
             room.onRoomCreated(playerSessions);
-            schedulerService.scheduleAtFixedRate(room, applicationProperties.getRoom().getInitdelay(), applicationProperties.getRoom().getLooprate(), TimeUnit.MILLISECONDS);
-            room.onRoomStarted();
+            room.start(applicationProperties.getRoom().getInitDelay(),
+                    applicationProperties.getRoom().getStartDelay(),
+                    applicationProperties.getRoom().getEndDelay(),
+                    applicationProperties.getRoom().getLoopRate());
         } catch (Exception e) {
             log.info("Queue interrupted", e);
         }
+    }
+
+    public void  onBattleEnd(GameRoom room) {
+        gameRoomMap.remove(room.key());
+        outOfRoomChannelMode.apply(room.close());
+    }
+
+    public void removePlayerFromWaitQueue(PlayerSession session) {
+        sessionQueue.removeIf(event -> event.getSession().equals(session));
     }
 }

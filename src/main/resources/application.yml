@@ -4,5 +4,6 @@ application:
   room:
     max-players: 1
     loop-rate: 100
+    end-delay: 10000
 server:
   port: 8080
