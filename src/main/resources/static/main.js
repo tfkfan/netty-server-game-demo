@@ -90,6 +90,10 @@ on(ROOM_START, function (evt) {
 
 on(ROOM_CLOSE, function (evt) {
     debugMsg.innerText = "Room closed."
+    initMsg.innerText = ""
+    updateMsg.innerText = ""
+    playerStats.innerText = ""
+    clear();
     document.getElementById("joinBtn").removeAttribute("disabled");
 });
 on(BATTLE_START, function (evt) {
@@ -114,7 +118,6 @@ on(UPDATE, function (evt) {
     selfId = evt.player.id;
     playerStats.innerText = JSON.stringify(players[selfId]);
     updateMsg.innerText = JSON.stringify(evt);
-    clear();
     drawPlayers();
     if (text)
         drawText(200, 300, text)
