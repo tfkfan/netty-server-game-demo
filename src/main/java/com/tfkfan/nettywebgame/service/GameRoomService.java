@@ -20,8 +20,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static com.tfkfan.nettywebgame.shared.FrameUtil.eventToFrame;
-
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -41,7 +39,7 @@ public class GameRoomService {
     public void addPlayerToWait(GameRoomJoinEvent event) {
         try {
             sessionQueue.add(event);
-            event.getSession().getChannel().writeAndFlush(eventToFrame(new OutcomingMessage(MessageType.CONNECT_WAIT)));
+            event.getSession().getChannel().writeAndFlush(new OutcomingMessage(MessageType.CONNECT_WAIT));
 
             if (sessionQueue.size() < applicationProperties.getRoom().getMaxplayers())
                 return;

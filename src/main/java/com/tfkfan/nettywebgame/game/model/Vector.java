@@ -1,4 +1,4 @@
-package com.tfkfan.nettywebgame.shared;
+package com.tfkfan.nettywebgame.game.model;
 
 import lombok.Data;
 import lombok.experimental.Accessors;

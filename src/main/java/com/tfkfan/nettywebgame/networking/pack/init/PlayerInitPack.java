@@ -1,7 +1,7 @@
 package com.tfkfan.nettywebgame.networking.pack.init;
 
 import com.tfkfan.nettywebgame.networking.pack.InitPack;
-import com.tfkfan.nettywebgame.shared.Vector;
+import com.tfkfan.nettywebgame.game.model.Vector;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

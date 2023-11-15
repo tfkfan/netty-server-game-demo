@@ -16,6 +16,14 @@ let rightKeys = {'d': true, 'D': true, 'В': true, 'в': true};
 let leftKeys = {'a': true, 'A': true, 'ф': true, 'Ф': true};
 let players = {};
 let selfId = null;
+let text = null;
+
+function drawText(x, y, text) {
+    ctx.font = "48px serif";
+    const lines = text.split('\n')
+    for (let i = 0; i < lines.length; i++)
+        ctx.strokeText(lines[i], x, y + (i * 48));
+}
 
 function drawPlayer(x, y) {
     ctx.beginPath();
@@ -35,6 +43,7 @@ function drawPlayers() {
 }
 
 document.onkeydown = function (event) {
+    text = null
     if (upKeys[event.key])
         send(PLAYER_KEY_DOWN, {inputId: "UP", state: true});
     if (downKeys[event.key])
@@ -79,7 +88,9 @@ on(ROOM_START, function (evt) {
     debugMsg.innerText = "Room started, please wait for battle start"
 });
 on(BATTLE_START, function (evt) {
-    debugMsg.innerText = "Battle started. Click on battlefield"
+    const msg = "Battle started. Click on battlefield.\nUse WASD to move."
+    debugMsg.innerText = msg
+    text = msg
 });
 on(FAILURE, function (evt) {
     debugMsg.innerText = "Internal error occurred"
@@ -100,4 +111,6 @@ on(UPDATE, function (evt) {
     updateMsg.innerText = JSON.stringify(evt);
     clear();
     drawPlayers();
+    if (text)
+        drawText(200, 300, text)
 });

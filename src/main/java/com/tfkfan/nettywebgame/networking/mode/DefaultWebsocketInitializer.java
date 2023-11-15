@@ -3,7 +3,7 @@ package com.tfkfan.nettywebgame.networking.mode;
 import com.tfkfan.nettywebgame.networking.adapter.TextWebsocketDecoder;
 import com.tfkfan.nettywebgame.networking.handler.InitialGameHandler;
 import com.tfkfan.nettywebgame.networking.handler.PingPongWebsocketHandler;
-import com.tfkfan.nettywebgame.shared.ServerConstants;
+import com.tfkfan.nettywebgame.config.ServerConstants;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;

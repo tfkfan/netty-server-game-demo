@@ -7,6 +7,7 @@ import com.tfkfan.nettywebgame.event.Event;
 import com.tfkfan.nettywebgame.event.listener.EventListener;
 import com.tfkfan.nettywebgame.networking.message.Message;
 import com.tfkfan.nettywebgame.networking.message.PlayerMessage;
+import com.tfkfan.nettywebgame.config.Constants;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.util.HashMap;
@@ -28,7 +29,7 @@ public class EventDispatcher<T extends Message> {
         if (!typeToEventType.containsKey(message.getType()))
             return;
 
-        Event event = objectMapper.fromJson(message.getData() != null ? message.getData().toString() : "{}",
+        Event event = objectMapper.fromJson(message.getData() != null ? message.getData().toString() : Constants.EMPTY_JSON,
                 typeToEventType.get(message.getType()));
         if (event instanceof AbstractPlayerEvent && message instanceof PlayerMessage)
             ((AbstractPlayerEvent) event).setSession(((PlayerMessage) message).session());

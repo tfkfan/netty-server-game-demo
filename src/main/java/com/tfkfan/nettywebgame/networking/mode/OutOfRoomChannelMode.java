@@ -4,8 +4,7 @@ import com.tfkfan.nettywebgame.networking.adapter.TextWebsocketDecoder;
 import com.tfkfan.nettywebgame.networking.adapter.TextWebsocketEncoder;
 import com.tfkfan.nettywebgame.networking.handler.OutOfRoomGameHandler;
 import com.tfkfan.nettywebgame.networking.session.Session;
-import com.tfkfan.nettywebgame.shared.ChannelUtil;
-import com.tfkfan.nettywebgame.shared.ServerConstants;
+import com.tfkfan.nettywebgame.config.ServerConstants;
 import io.netty.channel.ChannelPipeline;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -34,8 +33,8 @@ public class OutOfRoomChannelMode extends AbstractGameChannelMode {
     public <T extends Session> void apply(T playerSession) {
         log.trace("Going to apply {} on session: {}", getModeName(), playerSession);
 
-        ChannelPipeline pipeline = ChannelUtil
-                .getPipeLineOfConnection(playerSession);
+        ChannelPipeline pipeline = playerSession
+                .getPipeLineOfConnection();
 
         if (pipeline.names().contains(ServerConstants.INIT_HANDLER_NAME))
             pipeline.remove(ServerConstants.INIT_HANDLER_NAME);

@@ -1,6 +1,5 @@
 package com.tfkfan.nettywebgame.config;
 
-import com.tfkfan.nettywebgame.shared.Constants;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;

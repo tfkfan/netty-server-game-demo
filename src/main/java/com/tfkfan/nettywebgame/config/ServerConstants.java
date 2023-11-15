@@ -1,4 +1,4 @@
-package com.tfkfan.nettywebgame.shared;
+package com.tfkfan.nettywebgame.config;
 
 public interface ServerConstants {
     String WEBSOCKET_PATH = "/websocket";

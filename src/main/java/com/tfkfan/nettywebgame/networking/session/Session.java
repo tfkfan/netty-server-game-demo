@@ -2,6 +2,7 @@ package com.tfkfan.nettywebgame.networking.session;
 
 import com.tfkfan.nettywebgame.game.model.AbstractEntity;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelPipeline;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -29,5 +30,9 @@ public abstract class Session extends AbstractEntity<UUID> {
 
     public Object removeAttr(String key) {
         return attributes.remove(key);
+    }
+
+    public ChannelPipeline getPipeLineOfConnection() {
+        return channel.pipeline();
     }
 }

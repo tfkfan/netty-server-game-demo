@@ -15,8 +15,8 @@ import com.tfkfan.nettywebgame.networking.pack.update.PlayerUpdatePack;
 import com.tfkfan.nettywebgame.networking.pack.update.PrivatePlayerUpdatePack;
 import com.tfkfan.nettywebgame.networking.session.PlayerSession;
 import com.tfkfan.nettywebgame.service.GameRoomService;
-import com.tfkfan.nettywebgame.shared.Direction;
-import com.tfkfan.nettywebgame.shared.Vector;
+import com.tfkfan.nettywebgame.game.model.Direction;
+import com.tfkfan.nettywebgame.game.model.Vector;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.OffsetDateTime;

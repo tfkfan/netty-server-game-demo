@@ -5,7 +5,6 @@ import com.tfkfan.nettywebgame.networking.pack.InitPack;
 import com.tfkfan.nettywebgame.networking.pack.UpdatePack;
 import com.tfkfan.nettywebgame.networking.pack.IInitPackSupplier;
 import com.tfkfan.nettywebgame.networking.pack.IUpdatePackSupplier;
-import com.tfkfan.nettywebgame.shared.Vector;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;

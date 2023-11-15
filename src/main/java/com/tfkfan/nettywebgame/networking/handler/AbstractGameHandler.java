@@ -8,7 +8,6 @@ import com.tfkfan.nettywebgame.networking.message.Message;
 import com.tfkfan.nettywebgame.networking.message.MessageType;
 import com.tfkfan.nettywebgame.networking.message.impl.outcoming.OutcomingMessage;
 import com.tfkfan.nettywebgame.networking.pack.shared.ExceptionPack;
-import com.tfkfan.nettywebgame.shared.FrameUtil;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -35,17 +34,17 @@ public abstract class AbstractGameHandler<T extends Message> extends SimpleChann
 
     protected void send(Channel channel, Message message) {
         if (channel != null)
-            channel.writeAndFlush(FrameUtil.eventToFrame(message));
+            channel.writeAndFlush(message);
     }
 
     protected void closeChannelWithFailure(ChannelHandlerContext ctx, String message) {
         Channel channel = ctx.channel();
-        channel.writeAndFlush(FrameUtil.eventToFrame(new OutcomingMessage(MessageType.FAILURE, new ExceptionPack(message))))
+        channel.writeAndFlush(new OutcomingMessage(MessageType.FAILURE, new ExceptionPack(message)))
                 .addListener(ChannelFutureListener.CLOSE);
     }
 
     protected void closeChannelWithFailure(Channel channel, String message) {
-        channel.writeAndFlush(FrameUtil.eventToFrame(new OutcomingMessage(MessageType.FAILURE, new ExceptionPack(message))))
+        channel.writeAndFlush(new OutcomingMessage(MessageType.FAILURE, new ExceptionPack(message)))
                 .addListener(ChannelFutureListener.CLOSE);
     }
 
