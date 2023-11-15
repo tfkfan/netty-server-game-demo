@@ -69,7 +69,7 @@ public class DefaultGameRoom extends AbstractGameRoom {
         this.started.set(false);
         sendBroadcast(new OutcomingMessage(MessageType.ROOM_START,
                 new GameRoomStartPack(OffsetDateTime.now().plus(roomProperties.getStartDelay(), ChronoUnit.MILLIS).toInstant().toEpochMilli())));
-        schedulerService.schedule(this::onBattleStarted, roomProperties.getStartDelay(), TimeUnit.MILLISECONDS);
+        getRoomExecutorService().schedule(this::onBattleStarted, roomProperties.getStartDelay(), TimeUnit.MILLISECONDS);
         log.info("Room {} has been started", key());
     }
 

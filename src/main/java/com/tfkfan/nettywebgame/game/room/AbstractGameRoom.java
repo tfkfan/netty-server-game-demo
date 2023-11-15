@@ -21,9 +21,9 @@ public abstract class AbstractGameRoom implements GameRoom {
     private final UUID gameRoomId;
     protected Map<UUID, PlayerSession> sessions = new ConcurrentHashMap<>();
     protected final GameRoomManagementService gameRoomManagementService;
-    protected final ScheduledExecutorService schedulerService;
+    private final ScheduledExecutorService schedulerService;
 
-    private List<ScheduledFuture<?>> futureList = new ArrayList<>();
+    private final List<ScheduledFuture<?>> futureList = new ArrayList<>();
 
     protected AbstractGameRoom(UUID gameRoomId, GameRoomManagementService gameRoomManagementService, ScheduledExecutorService schedulerService) {
         this.gameRoomId = gameRoomId;
@@ -38,9 +38,9 @@ public abstract class AbstractGameRoom implements GameRoom {
 
     @Override
     public void start(long initialDelay, long startDelay, long endDelay, long loopRate) {
-        futureList.add(schedulerService.scheduleAtFixedRate(this,
+        futureList.add(getRoomExecutorService().scheduleAtFixedRate(this,
                 initialDelay, loopRate, TimeUnit.MILLISECONDS));
-        schedulerService.schedule(() -> {
+        getRoomExecutorService().schedule(() -> {
             onBattleEnd();
             gameRoomManagementService.onBattleEnd(this);
         }, endDelay + startDelay, TimeUnit.MILLISECONDS);

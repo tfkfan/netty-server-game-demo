@@ -1,6 +1,5 @@
 package com.tfkfan.nettywebgame.networking.handler;
 
-
 import com.tfkfan.nettywebgame.event.Event;
 import com.tfkfan.nettywebgame.event.dispatcher.EventDispatcher;
 import com.tfkfan.nettywebgame.event.listener.EventListener;
@@ -15,7 +14,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public abstract class AbstractGameHandler<T extends Message> extends SimpleChannelInboundHandler<T> {
+public abstract class AbstractGameHandler<T extends Message> extends SimpleChannelInboundHandler<T> implements WebsocketHandler {
     private final EventDispatcher<T> eventDispatcher;
 
     protected AbstractGameHandler(EventDispatcher<T> eventDispatcher) {
@@ -32,24 +31,13 @@ public abstract class AbstractGameHandler<T extends Message> extends SimpleChann
         eventDispatcher.fireEvent(ctx, msg);
     }
 
-    protected void send(Channel channel, Message message) {
-        if (channel != null)
-            channel.writeAndFlush(message);
-    }
-
     protected void closeChannelWithFailure(ChannelHandlerContext ctx, String message) {
-        Channel channel = ctx.channel();
-        channel.writeAndFlush(new OutcomingMessage(MessageType.FAILURE, new ExceptionPack(message)))
-                .addListener(ChannelFutureListener.CLOSE);
+        closeChannelWithFailure(ctx.channel(), message);
     }
 
     protected void closeChannelWithFailure(Channel channel, String message) {
-        channel.writeAndFlush(new OutcomingMessage(MessageType.FAILURE, new ExceptionPack(message)))
+        send(channel, new OutcomingMessage(MessageType.FAILURE, new ExceptionPack(message)))
                 .addListener(ChannelFutureListener.CLOSE);
-    }
-
-    protected void sendFailure(ChannelHandlerContext ctx, String message) {
-        send(ctx.channel(), new OutcomingMessage(MessageType.FAILURE, new ExceptionPack(message)));
     }
 
     @Override
