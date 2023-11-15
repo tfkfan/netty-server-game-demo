@@ -16,7 +16,6 @@ public class GameMap {
     public GameMap() {
     }
 
-
     public DefaultPlayer getPlayerById(Long id) {
         return players.get(id);
     }

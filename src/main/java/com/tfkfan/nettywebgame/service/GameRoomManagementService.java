@@ -7,7 +7,6 @@ import com.tfkfan.nettywebgame.game.map.GameMap;
 import com.tfkfan.nettywebgame.game.model.DefaultPlayer;
 import com.tfkfan.nettywebgame.game.room.DefaultGameRoom;
 import com.tfkfan.nettywebgame.game.room.GameRoom;
-import com.tfkfan.nettywebgame.networking.handler.OutOfRoomGameHandler;
 import com.tfkfan.nettywebgame.networking.message.MessageType;
 import com.tfkfan.nettywebgame.networking.message.impl.outcoming.OutcomingMessage;
 import com.tfkfan.nettywebgame.networking.mode.MainGameChannelMode;
@@ -21,7 +20,6 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -57,24 +55,22 @@ public class GameRoomManagementService {
             while (playerSessions.size() != applicationProperties.getRoom().getMaxPlayers()) {
                 final GameRoomJoinEvent evt = sessionQueue.remove();
                 final PlayerSession ps = evt.getSession();
-                final DefaultPlayer player = playerFactory.create(gameMap.nextPlayerId(), evt, room, ps);
                 ps.setRoomKey(room.key());
-                ps.setPlayer(player);
+                ps.setPlayer(playerFactory.create(gameMap.nextPlayerId(), evt, room, ps));
                 playerSessions.add(ps);
             }
 
             gameChannelMode.apply(playerSessions);
             room.onRoomCreated(playerSessions);
-            room.start(applicationProperties.getRoom().getInitDelay(),
-                    applicationProperties.getRoom().getStartDelay(),
+            room.start(applicationProperties.getRoom().getStartDelay(),
                     applicationProperties.getRoom().getEndDelay(),
                     applicationProperties.getRoom().getLoopRate());
         } catch (Exception e) {
-            log.info("Queue interrupted", e);
+            log.warn("Queue interrupted", e);
         }
     }
 
-    public void  onBattleEnd(GameRoom room) {
+    public void onBattleEnd(GameRoom room) {
         gameRoomMap.remove(room.key());
         outOfRoomChannelMode.apply(room.close());
     }

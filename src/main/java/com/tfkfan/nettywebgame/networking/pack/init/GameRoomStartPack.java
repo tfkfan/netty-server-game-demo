@@ -7,5 +7,4 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class GameRoomStartPack implements InitPack {
-    private Long battleStart;
 }

@@ -9,10 +9,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public interface GameRoom extends Runnable {
-    void start(long initialDelay, long startDelay, long endDelay, long loopRate);
+    void start( long startDelay, long endDelay, long loopRate);
 
     void onRoomCreated(List<PlayerSession> playerSessions);
 
@@ -20,9 +21,10 @@ public interface GameRoom extends Runnable {
 
     void onBattleStarted();
 
-    void onBattleEnd();
+    void onBattleEnded();
 
     void onDestroy(List<PlayerSession> playerSessions);
+    void onDestroy(List<PlayerSession> playerSessions, Consumer<PlayerSession> callback);
 
     void onDisconnect(PlayerSession session);
 
@@ -35,7 +37,6 @@ public interface GameRoom extends Runnable {
     Optional<PlayerSession> getPlayerSessionBySessionId(Session session);
 
     UUID key();
-
 
     void send(PlayerSession playerSession, Message message);
 

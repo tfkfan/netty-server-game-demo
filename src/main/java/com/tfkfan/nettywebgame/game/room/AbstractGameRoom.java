@@ -1,5 +1,6 @@
 package com.tfkfan.nettywebgame.game.room;
 
+import com.tfkfan.nettywebgame.networking.handler.WebsocketHandler;
 import com.tfkfan.nettywebgame.networking.message.Message;
 import com.tfkfan.nettywebgame.networking.message.MessageType;
 import com.tfkfan.nettywebgame.networking.message.impl.outcoming.OutcomingMessage;
@@ -13,11 +14,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Slf4j
-public abstract class AbstractGameRoom implements GameRoom {
+public abstract class AbstractGameRoom implements GameRoom, WebsocketHandler {
     private final UUID gameRoomId;
     protected Map<UUID, PlayerSession> sessions = new ConcurrentHashMap<>();
     protected final GameRoomManagementService gameRoomManagementService;
@@ -37,13 +38,14 @@ public abstract class AbstractGameRoom implements GameRoom {
     }
 
     @Override
-    public void start(long initialDelay, long startDelay, long endDelay, long loopRate) {
+    public void start(long startDelay, long endDelay, long loopRate) {
         futureList.add(getRoomExecutorService().scheduleAtFixedRate(this,
-                initialDelay, loopRate, TimeUnit.MILLISECONDS));
+                startDelay, loopRate, TimeUnit.MILLISECONDS));
         getRoomExecutorService().schedule(() -> {
-            onBattleEnd();
+            onBattleEnded();
             gameRoomManagementService.onBattleEnd(this);
         }, endDelay + startDelay, TimeUnit.MILLISECONDS);
+        getRoomExecutorService().schedule(this::onBattleStarted, startDelay, TimeUnit.MILLISECONDS);
         onRoomStarted();
     }
 
@@ -58,32 +60,38 @@ public abstract class AbstractGameRoom implements GameRoom {
 
     @Override
     public void onDestroy(List<PlayerSession> playerSessions) {
+        onDestroy(playerSessions, null);
+    }
+
+    @Override
+    public void onDestroy(List<PlayerSession> playerSessions, Consumer<PlayerSession> callback) {
         for (PlayerSession playerSession : playerSessions) {
             sessions.remove(playerSession.getId());
             sendBroadcast(new OutcomingMessage(MessageType.MESSAGE,
                     playerSession.getPlayer().getId() + " left"));
+            if (callback != null)
+                callback.accept(playerSession);
         }
     }
 
+    @Override
     public void onDisconnect(PlayerSession playerSession) {
-        sessions.remove(playerSession.getId());
-        playerSession.removePlayerSessionFromChannel();
     }
 
     @Override
     public void send(PlayerSession playerSession, Message message) {
         if (playerSession != null)
-            playerSession.getChannel().writeAndFlush(message);
+            send(playerSession.getChannel(), message);
     }
 
     @Override
     public void sendBroadcast(Message networkMessage) {
-        sessions.values().forEach(s -> s.getChannel().writeAndFlush(networkMessage));
+        sessions.values().forEach(s -> send(s.getChannel(), networkMessage));
     }
 
     @Override
     public void sendBroadcast(Function<PlayerSession, Message> function) {
-        sessions.values().forEach(s -> s.getChannel().writeAndFlush(function.apply(s)));
+        sessions.values().forEach(s -> send(s.getChannel(), function.apply(s)));
     }
 
     @Override

@@ -4,6 +4,8 @@ import com.tfkfan.nettywebgame.event.InitPlayerEvent;
 import com.tfkfan.nettywebgame.event.KeyDownPlayerEvent;
 import com.tfkfan.nettywebgame.game.map.GameMap;
 import com.tfkfan.nettywebgame.game.model.DefaultPlayer;
+import com.tfkfan.nettywebgame.game.model.Direction;
+import com.tfkfan.nettywebgame.game.model.Vector;
 import com.tfkfan.nettywebgame.networking.message.MessageType;
 import com.tfkfan.nettywebgame.networking.message.impl.outcoming.OutcomingMessage;
 import com.tfkfan.nettywebgame.networking.message.impl.outcoming.OutcomingPlayerMessage;
@@ -12,19 +14,13 @@ import com.tfkfan.nettywebgame.networking.pack.init.GameRoomStartPack;
 import com.tfkfan.nettywebgame.networking.pack.init.GameSettingsPack;
 import com.tfkfan.nettywebgame.networking.pack.update.GameUpdatePack;
 import com.tfkfan.nettywebgame.networking.pack.update.PlayerUpdatePack;
-import com.tfkfan.nettywebgame.networking.pack.update.PrivatePlayerUpdatePack;
 import com.tfkfan.nettywebgame.networking.session.PlayerSession;
 import com.tfkfan.nettywebgame.service.GameRoomManagementService;
-import com.tfkfan.nettywebgame.game.model.Direction;
-import com.tfkfan.nettywebgame.game.model.Vector;
 import lombok.extern.slf4j.Slf4j;
 
-import java.time.OffsetDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
@@ -33,10 +29,7 @@ import static com.tfkfan.nettywebgame.config.ApplicationProperties.RoomPropertie
 @Slf4j
 public class DefaultGameRoom extends AbstractGameRoom {
     private final GameMap gameMap;
-
     private final AtomicBoolean started = new AtomicBoolean(false);
-
-
     private final RoomProperties roomProperties;
 
     public DefaultGameRoom(GameMap gameMap, UUID gameRoomId,
@@ -58,31 +51,29 @@ public class DefaultGameRoom extends AbstractGameRoom {
             super.onRoomCreated(playerSessions);
         }
 
-        sendBroadcast(ps -> new OutcomingMessage(MessageType.JOIN_SUCCESS,
-                new GameSettingsPack(
-                        roomProperties.getLoopRate())));
-        log.info("Room {} has been created", key());
+        sendBroadcast(new OutcomingMessage(MessageType.JOIN_SUCCESS,
+                new GameSettingsPack(roomProperties.getLoopRate())));
+        log.debug("Room {} has been created", key());
     }
 
     @Override
     public void onRoomStarted() {
         this.started.set(false);
-        sendBroadcast(new OutcomingMessage(MessageType.ROOM_START,
-                new GameRoomStartPack(OffsetDateTime.now().plus(roomProperties.getStartDelay(), ChronoUnit.MILLIS).toInstant().toEpochMilli())));
-        getRoomExecutorService().schedule(this::onBattleStarted, roomProperties.getStartDelay(), TimeUnit.MILLISECONDS);
-        log.info("Room {} has been started", key());
+        sendBroadcast(new OutcomingMessage(MessageType.ROOM_START, new GameRoomStartPack()));
+        log.debug("Room {} has been started", key());
     }
 
     @Override
     public void onBattleStarted() {
-        log.info("Room {}. Battle has been started", key());
         this.started.set(true);
-        sendBroadcast((s) -> new OutcomingPlayerMessage(MessageType.BATTLE_START));
+        sendBroadcast(new OutcomingPlayerMessage(MessageType.BATTLE_START));
+        log.debug("Room {}. Battle has been started", key());
     }
 
     @Override
-    public void onBattleEnd() {
+    public void onBattleEnded() {
         sendBroadcast(new OutcomingMessage(MessageType.ROOM_CLOSE));
+        log.debug("Room {} has been ended", key());
     }
 
     //room's game loop
@@ -97,11 +88,10 @@ public class DefaultGameRoom extends AbstractGameRoom {
                         .collect(Collectors.toList());
 
         for (DefaultPlayer currentPlayer : gameMap.getPlayers()) {
-            final PrivatePlayerUpdatePack updatePack = currentPlayer.getPrivateUpdatePack();
             final PlayerSession session = currentPlayer.getSession();
             send(session, new OutcomingPlayerMessage(session, MessageType.UPDATE,
                     new GameUpdatePack(
-                            updatePack,
+                            currentPlayer.getPrivateUpdatePack(),
                             playerUpdatePackList)));
         }
     }
@@ -124,7 +114,6 @@ public class DefaultGameRoom extends AbstractGameRoom {
 
     @Override
     public void onDestroy(List<PlayerSession> playerSessions) {
-        playerSessions.forEach(playerSession -> gameMap.removePlayer((DefaultPlayer) playerSession.getPlayer()));
-        super.onDestroy(playerSessions);
+        onDestroy(playerSessions, playerSession -> gameMap.removePlayer((DefaultPlayer) playerSession.getPlayer()));
     }
 }

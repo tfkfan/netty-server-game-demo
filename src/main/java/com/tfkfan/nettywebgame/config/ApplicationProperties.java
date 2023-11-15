@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Configuration;
 public class ApplicationProperties {
     public static @Data @NoArgsConstructor class RoomProperties {
         private Long loopRate = Constants.DEFAULT_LOOPRATE;
-        private Long initDelay = Constants.ROOM_INIT_DELAY;
         private Long startDelay = Constants.ROOM_START_DELAY;
         private Long maxPlayers = Constants.MAX_PLAYERS;
         private Long endDelay = Constants.END_DELAY;
