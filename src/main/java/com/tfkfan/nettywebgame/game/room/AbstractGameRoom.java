@@ -39,13 +39,10 @@ public abstract class AbstractGameRoom implements GameRoom, WebsocketHandler {
 
     @Override
     public void start(long startDelay, long endDelay, long loopRate) {
-        futureList.add(getRoomExecutorService().scheduleAtFixedRate(this,
-                startDelay, loopRate, TimeUnit.MILLISECONDS));
-        getRoomExecutorService().schedule(() -> {
+        futureList.addAll(Arrays.asList(getRoomExecutorService().scheduleAtFixedRate(this, startDelay, loopRate, TimeUnit.MILLISECONDS), getRoomExecutorService().schedule(() -> {
             onBattleEnded();
             gameRoomManagementService.onBattleEnd(this);
-        }, endDelay + startDelay, TimeUnit.MILLISECONDS);
-        getRoomExecutorService().schedule(this::onBattleStarted, startDelay, TimeUnit.MILLISECONDS);
+        }, endDelay + startDelay, TimeUnit.MILLISECONDS), getRoomExecutorService().schedule(this::onBattleStarted, startDelay, TimeUnit.MILLISECONDS)));
         onRoomStarted();
     }
 
@@ -53,8 +50,7 @@ public abstract class AbstractGameRoom implements GameRoom, WebsocketHandler {
     public void onRoomCreated(List<PlayerSession> playerSessions) {
         for (PlayerSession playerSession : playerSessions) {
             sessions.put(playerSession.getId(), playerSession);
-            sendBroadcast(new OutcomingMessage(MessageType.MESSAGE,
-                    playerSession.getPlayer().getId() + " successfully joined"));
+            sendBroadcast(new OutcomingMessage(MessageType.MESSAGE, playerSession.getPlayer().getId() + " successfully joined"));
         }
     }
 
@@ -67,10 +63,8 @@ public abstract class AbstractGameRoom implements GameRoom, WebsocketHandler {
     public void onDestroy(List<PlayerSession> playerSessions, Consumer<PlayerSession> callback) {
         for (PlayerSession playerSession : playerSessions) {
             sessions.remove(playerSession.getId());
-            sendBroadcast(new OutcomingMessage(MessageType.MESSAGE,
-                    playerSession.getPlayer().getId() + " left"));
-            if (callback != null)
-                callback.accept(playerSession);
+            sendBroadcast(new OutcomingMessage(MessageType.MESSAGE, playerSession.getPlayer().getId() + " left"));
+            if (callback != null) callback.accept(playerSession);
         }
     }
 
@@ -80,8 +74,7 @@ public abstract class AbstractGameRoom implements GameRoom, WebsocketHandler {
 
     @Override
     public void send(PlayerSession playerSession, Message message) {
-        if (playerSession != null)
-            send(playerSession.getChannel(), message);
+        if (playerSession != null) send(playerSession.getChannel(), message);
     }
 
     @Override
@@ -106,18 +99,14 @@ public abstract class AbstractGameRoom implements GameRoom, WebsocketHandler {
     @Override
     public Collection<PlayerSession> close() {
         futureList.forEach(future -> future.cancel(true));
-        List<PlayerSession> sessionList = sessions
-                .values()
-                .stream()
-                .toList();
+        List<PlayerSession> sessionList = sessions.values().stream().toList();
         onDestroy(sessionList);
         return sessionList;
     }
 
     @Override
     public Optional<PlayerSession> getPlayerSessionBySessionId(Session session) {
-        if (sessions.containsKey(session.getId()))
-            return Optional.of(sessions.get(session.getId()));
+        if (sessions.containsKey(session.getId())) return Optional.of(sessions.get(session.getId()));
         return Optional.empty();
     }
 
