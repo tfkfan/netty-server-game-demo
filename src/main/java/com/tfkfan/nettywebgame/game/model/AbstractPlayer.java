@@ -19,7 +19,8 @@ import java.util.stream.Collectors;
 @Setter
 public abstract class AbstractPlayer<GR extends GameRoom,
         IP extends InitPack, UP extends UpdatePack, PUP extends PrivateUpdatePack>
-        extends GameEntity<Long, GR, IP, UP> implements Player, Updatable, IPrivateUpdatePackSupplier<PUP> {
+        extends GameEntity<Long, GR, IP, UP>
+        implements Player, Updatable, IPrivateUpdatePackSupplier<PUP> {
     protected PlayerSession session;
     protected Map<Direction, Boolean> movingState;
 

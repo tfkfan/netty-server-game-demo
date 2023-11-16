@@ -10,6 +10,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public abstract class AbstractPlayerEvent extends AbstractEvent implements Event {
-    private  PlayerSession session;
+public abstract class AbstractPlayerEvent extends AbstractEvent implements PlayerEvent {
+    private PlayerSession session;
 }

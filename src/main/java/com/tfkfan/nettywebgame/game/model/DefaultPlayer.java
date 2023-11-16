@@ -1,5 +1,6 @@
 package com.tfkfan.nettywebgame.game.model;
 
+import com.tfkfan.nettywebgame.event.GameRoomJoinEvent;
 import com.tfkfan.nettywebgame.game.room.DefaultGameRoom;
 import com.tfkfan.nettywebgame.networking.pack.init.PlayerInitPack;
 import com.tfkfan.nettywebgame.networking.pack.update.PrivatePlayerUpdatePack;
@@ -9,11 +10,20 @@ import com.tfkfan.nettywebgame.config.Constants;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.springframework.stereotype.Component;
 
 @Accessors(chain = true)
 @Getter
 @Setter
 public class DefaultPlayer extends AbstractPlayer<DefaultGameRoom, PlayerInitPack, PlayerUpdatePack, PrivatePlayerUpdatePack> {
+    @Component
+    public static class DefaultPlayerFactory implements Player.PlayerFactory<GameRoomJoinEvent,
+            DefaultPlayer, DefaultGameRoom> {
+        @Override
+        public DefaultPlayer create(Long nextId, GameRoomJoinEvent initialData, DefaultGameRoom gameRoom, PlayerSession playerSession) {
+            return new DefaultPlayer(nextId, gameRoom, playerSession);
+        }
+    }
     public DefaultPlayer(Long id, DefaultGameRoom gameRoom, PlayerSession session) {
         super(id, gameRoom, session);
     }

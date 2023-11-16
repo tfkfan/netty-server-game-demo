@@ -2,11 +2,12 @@ package com.tfkfan.nettywebgame.service;
 
 import com.tfkfan.nettywebgame.config.ApplicationProperties;
 import com.tfkfan.nettywebgame.event.GameRoomJoinEvent;
-import com.tfkfan.nettywebgame.game.factory.PlayerFactory;
 import com.tfkfan.nettywebgame.game.map.GameMap;
 import com.tfkfan.nettywebgame.game.model.DefaultPlayer;
+import com.tfkfan.nettywebgame.game.model.Player;
 import com.tfkfan.nettywebgame.game.room.DefaultGameRoom;
 import com.tfkfan.nettywebgame.game.room.GameRoom;
+import com.tfkfan.nettywebgame.networking.handler.WebsocketHandler;
 import com.tfkfan.nettywebgame.networking.message.MessageType;
 import com.tfkfan.nettywebgame.networking.message.impl.outcoming.OutcomingMessage;
 import com.tfkfan.nettywebgame.networking.mode.MainGameChannelMode;
@@ -24,13 +25,13 @@ import java.util.concurrent.ScheduledExecutorService;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class GameRoomManagementService {
+public class GameRoomManagementService implements WebsocketHandler {
     private final Map<UUID, DefaultGameRoom> gameRoomMap = new ConcurrentHashMap<>();
     private final Queue<GameRoomJoinEvent> sessionQueue = new ConcurrentLinkedQueue<>();
 
     private final MainGameChannelMode gameChannelMode;
     private final OutOfRoomChannelMode outOfRoomChannelMode;
-    private final PlayerFactory<Long, GameRoomJoinEvent, DefaultPlayer, DefaultGameRoom> playerFactory;
+    private final Player.PlayerFactory<GameRoomJoinEvent, DefaultPlayer, DefaultGameRoom> playerFactory;
     private final ApplicationProperties applicationProperties;
     private final ScheduledExecutorService schedulerService;
 
@@ -40,7 +41,7 @@ public class GameRoomManagementService {
 
     public void addPlayerToWait(GameRoomJoinEvent event) {
         sessionQueue.add(event);
-        event.getSession().getChannel().writeAndFlush(new OutcomingMessage(MessageType.JOIN_WAIT));
+        send(event, new OutcomingMessage(MessageType.JOIN_WAIT));
 
         if (sessionQueue.size() < applicationProperties.getRoom().getMaxPlayers())
             return;

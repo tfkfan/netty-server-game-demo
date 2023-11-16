@@ -1,6 +1,5 @@
 package com.tfkfan.nettywebgame.game.room;
 
-import com.tfkfan.nettywebgame.event.InitPlayerEvent;
 import com.tfkfan.nettywebgame.event.KeyDownPlayerEvent;
 import com.tfkfan.nettywebgame.game.map.GameMap;
 import com.tfkfan.nettywebgame.game.model.DefaultPlayer;
@@ -9,7 +8,6 @@ import com.tfkfan.nettywebgame.game.model.Vector;
 import com.tfkfan.nettywebgame.networking.message.MessageType;
 import com.tfkfan.nettywebgame.networking.message.impl.outcoming.OutcomingMessage;
 import com.tfkfan.nettywebgame.networking.message.impl.outcoming.OutcomingPlayerMessage;
-import com.tfkfan.nettywebgame.networking.pack.init.GameInitPack;
 import com.tfkfan.nettywebgame.networking.pack.init.GameRoomStartPack;
 import com.tfkfan.nettywebgame.networking.pack.init.GameSettingsPack;
 import com.tfkfan.nettywebgame.networking.pack.update.GameUpdatePack;
@@ -102,14 +100,6 @@ public class DefaultGameRoom extends AbstractGameRoom {
         if (!player.getIsAlive()) return;
         Direction direction = Direction.valueOf(event.getInputId());
         player.updateState(direction, event.getState());
-    }
-
-    public void onPlayerInitRequest(InitPlayerEvent initEvent) {
-        PlayerSession session = initEvent.getSession();
-        send(session, new OutcomingPlayerMessage(session, MessageType.INIT,
-                new GameInitPack(((DefaultPlayer) session.getPlayer()).getInitPack(),
-                        roomProperties.getLoopRate(),
-                        gameMap.alivePlayers())));
     }
 
     @Override

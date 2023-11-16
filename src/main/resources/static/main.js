@@ -2,7 +2,6 @@ var cnvs = document.getElementById("cnvs");
 cnvs.width = window.innerWidth - 350;
 cnvs.height = window.innerHeight - 50;
 
-var initMsg = document.getElementById("initMsg");
 var updateMsg = document.getElementById("updateMsg");
 var playerStats = document.getElementById("playerStats");
 var debugMsg = document.getElementById("debugMsg");
@@ -90,11 +89,12 @@ on(ROOM_START, function (evt) {
 
 on(ROOM_CLOSE, function (evt) {
     debugMsg.innerText = "Room closed."
-    initMsg.innerText = ""
     updateMsg.innerText = ""
     playerStats.innerText = ""
     clear();
-    document.getElementById("joinBtn").removeAttribute("disabled");
+    const joinBtn = document.getElementById("joinBtn")
+    joinBtn.removeAttribute("disabled");
+    joinBtn.innerText = "Join again"
 });
 on(BATTLE_START, function (evt) {
     const msg = "Battle started. Click on battlefield.\nUse WASD to move."
@@ -104,11 +104,6 @@ on(BATTLE_START, function (evt) {
 on(FAILURE, function (evt) {
     debugMsg.innerText = "Internal error occurred"
 });
-
-on(INIT, function (evt) {
-    initMsg.innerText = JSON.stringify(evt);
-});
-
 on(UPDATE, function (evt) {
     clear();
     players = evt.players.reduce(function (map, obj) {
