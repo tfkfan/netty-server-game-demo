@@ -20,9 +20,4 @@ public  abstract class AbstractMessage implements Message, Serializable {
         this.type = type;
         this.data = data;
     }
-
-    @Override
-    public String toString() {
-        return "Event [type=" + type + ", source=" + data.toString() + "]";
-    }
 }
