@@ -1,5 +1,7 @@
 ## Game netty server demo
 
+# Attention! Highload java game server framework being in active development process now is available for usage and contribution.  If you like It - support this tool. https://github.com/tfkfan/orbital
+
 Java highload game server demo with netty features
 and matchmaking support
 
